@@ -1,4 +1,11 @@
 
+# ============================================================================
+# NETWORK INTRUSION DETECTION - DATA PREPROCESSING AND MODEL TRAINING
+# ============================================================================
+
+# ============================================================================
+# IMPORTS
+# ============================================================================
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -13,7 +20,12 @@ from imblearn.pipeline import Pipeline
 from collections import Counter
 import os
 from datetime import datetime
-# Loading the dataset
+
+# ============================================================================
+# SECTION 1: DATA PREPROCESSING
+# ============================================================================
+
+# 1.1 Loading the dataset
 data1 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv')
 data2 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Tuesday-WorkingHours.pcap_ISCX.csv')
 data3 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Wednesday-workingHours.pcap_ISCX.csv')
@@ -72,7 +84,6 @@ print(missing.loc[missing > 0])
 #                  Missing Values  Percentage of Total Values
 # Flow Bytes/s               1257                        0.06
 #  Flow Packets/s            1257                        0.06
-
 
 # Fill missing values with median (for numeric columns only)
 print("Filling missing values with median...")
@@ -149,102 +160,92 @@ print("Multi-class mapping (y_multi):")
 for val in sorted(data['y_multi'].unique()):
     print(f"{val}: {le.inverse_transform([val])[0]}")
 
-# --- Add binary target ---
-data['y_binary'] = np.where(data['Attack Type'] == 'BENIGN', 0, 1)
-
 # Quick check
-print("\nBinary target distribution (y_binary):")
-print(data['y_binary'].value_counts())
+print("\nClass distribution (y_multi):")
+print(data['y_multi'].value_counts())
 
 # --- 1) Build feature matrix X (numeric only; drop label columns) -------------
-drop_cols = {'Attack Type', 'y_binary', 'y_multi'}
-feature_cols = [c for c in data.columns if c not in drop_cols and pd.api.types.is_numeric_dtype(data[c])]
-X = data[feature_cols].copy()
+drop_cols = {'Attack Type', 'y_multi'}
+numeric_cols = [c for c in data.columns if c not in drop_cols and pd.api.types.is_numeric_dtype(data[c])]
+X = data[numeric_cols].copy()
 
-# --- 2) BINARY FEATURE RANKING (Pearson corr with y_binary) -------------------
-y_bin = data['y_binary']
-corr_bin = X.corrwith(y_bin, method='pearson').sort_values(ascending=False)
-corr_bin_df = corr_bin.rename('Abs Corr (Binary)').abs().sort_values(ascending=False).reset_index()
-corr_bin_df.columns = ['Feature', 'Abs Corr (Binary)']
+# Remove constant features (features with zero variance)
+print("\nRemoving constant features...")
+initial_features = X.shape[1]
+constant_features = X.columns[X.var() == 0].tolist()
+if constant_features:
+    print(f"Found {len(constant_features)} constant features: {constant_features[:5]}{'...' if len(constant_features) > 5 else ''}")
+    X = X.drop(columns=constant_features)
+    print(f"Removed {len(constant_features)} constant features")
 
-print("\n=== Top 20 features for BINARY (Benign=0, Attack=1) by |Pearson correlation| ===")
-print(corr_bin_df.head(20).to_string(index=False))
+# Calculate correlation with the target variable
+print("Calculating feature correlations...")
+target_corr = X.apply(lambda x: abs(x.corr(data['y_multi'], method='spearman')))
 
-# ONLY positive correlations:
-pos_bin = corr_bin[corr_bin >= 0.01].sort_values(ascending=False)
-print(f"\n# Positive-correlation features with y_binary (count={pos_bin.shape[0]}):")
-for i, (feat, val) in enumerate(pos_bin.items(), start=1):
-    print(f"{i:>2}. {feat:<30} : {val:.2f}")
+# Remove features with NaN correlation (shouldn't happen after removing constants, but just in case)
+target_corr = target_corr.dropna()
 
-# Keep only positively correlated features
-X = X[pos_bin.index]
-print(f"\nKeeping {len(pos_bin)} features with positive correlation >= 0.01")
+# Select features with correlation > 0.10
+selected_features = target_corr[target_corr > 0.10].index.tolist()
+X = X[selected_features]
 
-# Split the data before scaling
+print(f"\nOriginal number of numeric features: {len(numeric_cols)}")
+print(f"Number of features with correlation > 0.10: {len(selected_features)}")
+print("\nSelected features and their correlation with the target:")
+for feat, corr in sorted(zip(selected_features, target_corr[selected_features]), key=lambda x: abs(x[1]), reverse=True):
+    print(f"{feat:<30}: {corr:.3f}")
+
+# 1.8 Split the data before scaling
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y_bin, test_size=0.2, random_state=42, stratify=y_bin
+    X, data['y_multi'], test_size=0.2, random_state=42, stratify=data['y_multi']
 )
 print(f"\nDataset split - Training: {X_train.shape[0]} samples, Test: {X_test.shape[0]} samples")
 
-# Initialize and fit the scaler on training data only
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-
-# Apply the same scaling to test data (without fitting)
-X_test_scaled = scaler.transform(X_test)
-
-# Convert back to DataFrame to maintain column names
-X_train = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
-X_test = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
-
-# Memory optimization
+# 1.9 Memory optimization
 print("\nOptimizing memory usage...")
 X_train = X_train.astype(np.float32)
 X_test = X_test.astype(np.float32)
 
-# Apply SMOTE to balance the training set only
-print("\nApplying SMOTE to balance the training set...")
-from imblearn.over_sampling import SMOTE
-smote = SMOTE(random_state=42)
-X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
-print(f"Training set before SMOTE: {X_train.shape[0]} samples")
-print(f"Training set after SMOTE: {X_train_balanced.shape[0]} samples")
-print("Class distribution after SMOTE:", pd.Series(y_train_balanced).value_counts().to_dict())
-
-# Apply PCA to the balanced training set
-print("\nApplying PCA to the balanced training set...")
-from sklearn.decomposition import PCA
-
-# Use 95% of variance or max 50 components, whichever is more restrictive
-pca = PCA(n_components=0.95, random_state=42)
-X_train_pca = pca.fit_transform(X_train_balanced)
-X_test_pca = pca.transform(X_test)  # Apply same transformation to test set
-
-print(f"Original number of features: {X_train_balanced.shape[1]}")
-print(f"Reduced number of components: {pca.n_components_}")
-print(f"Explained variance ratio: {np.sum(pca.explained_variance_ratio_):.2f}")
-
-# Convert back to DataFrames
-X_train_final = pd.DataFrame(X_train_pca, index=X_train_balanced.index,
-                           columns=[f'PC{i+1}' for i in range(pca.n_components_)])
-X_test_final = pd.DataFrame(X_test_pca, index=X_test.index,
-                          columns=[f'PC{i+1}' for i in range(pca.n_components_)])
-
-# Create the directory if it doesn't exist
+# 1.10 Save processed data
+print("\nSaving processed data...")
 os.makedirs('processed_data', exist_ok=True)
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-# Save the processed data
-train_data = pd.concat([X_train_final, y_train_balanced], axis=1)
-test_data = pd.concat([X_test_final, y_test], axis=1)
-
-train_file = f'processed_data/train_data_balanced_pca_{timestamp}.csv'
-test_file = f'processed_data/test_data_pca_{timestamp}.csv'
-
+# Save training data
+train_data = pd.concat([X_train, y_train], axis=1)
+train_file = f'processed_data/X_train_{timestamp}.csv'
 train_data.to_csv(train_file, index=False)
+
+# Save test data
+test_data = pd.concat([X_test, y_test], axis=1)
+test_file = f'processed_data/X_test_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
 
-print(f"\nBalanced training data with PCA saved to: {os.path.abspath(train_file)}")
-print(f"Test data with PCA saved to: {os.path.abspath(test_file)}")
-print("\nData preprocessing completed successfully!")
+# Save label encoder
+import pickle
+le_file = f'processed_data/label_encoder_{timestamp}.pkl'
+with open(le_file, 'wb') as f:
+    pickle.dump(le, f)
+
+# Save feature names
+feature_file = f'processed_data/selected_features_{timestamp}.txt'
+with open(feature_file, 'w') as f:
+    for feature in selected_features:
+        f.write(f"{feature}\n")
+
+print(f"Training data saved to: {os.path.abspath(train_file)}")
+print(f"Test data saved to: {os.path.abspath(test_file)}")
+print(f"Label encoder saved to: {os.path.abspath(le_file)}")
+print(f"Selected features saved to: {os.path.abspath(feature_file)}")
+
+print("\n" + "="*80)
+print("DATA PREPROCESSING COMPLETED")
+print("="*80)
+print(f"Final training set shape: {X_train.shape}")
+print(f"Final test set shape: {X_test.shape}")
+print(f"Number of classes: {len(le.classes_)}")
+print(f"Selected features: {len(selected_features)}")
+print("="*80)
+
+
