@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Intrusion Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .upload-section {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .upload-section.dragover {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .summary-card h3 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .attack-distribution {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .attack-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attack-item:last-child {
+            border-bottom: none;
+        }
+
+        .attack-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .attack-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .confidence-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .confidence-high { background-color: #28a745; }
+        .confidence-medium { background-color: #ffc107; }
+        .confidence-low { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Network Intrusion Detection</h1>
+            <p>Upload your network traffic CSV file to detect potential security threats</p>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📁</div>
+            <h3>Drop your CSV file here or click to browse</h3>
+            <p style="margin: 15px 0; color: #666;">Supported format: CSV files up to 100MB</p>
+            <input type="file" id="fileInput" class="file-input" accept=".csv">
+            <button class="upload-btn" id="uploadBtn">Choose File</button>
+            
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div id="loadingSection" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <span>Analyzing network traffic...</span>
+            </div>
+        </div>
+
+        <div id="errorSection"></div>
+
+        <div class="results-section" id="resultsSection">
+            <h2 style="margin-bottom: 20px; color: #333;">📊 Analysis Results</h2>
+            
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3 id="totalSamples">0</h3>
+                    <p>Total Samples</p>
+                </div>
+                <div class="summary-card">
+                    <h3 id="avgConfidence">0%</h3>
+                    <p>Avg Confidence</p>
+                </div>
+                <div class="summary-card">
+                    <h3 id="highConfidence">0</h3>
+                    <p>High Confidence</p>
+                </div>
+                <div class="summary-card">
+                    <h3 id="threats">0</h3>
+                    <p>Threats Detected</p>
+                </div>
+            </div>
+
+            <div class="attack-distribution">
+                <h3 style="margin-bottom: 15px; color: #333;">🎯 Attack Type Distribution</h3>
+                <div id="attackDistribution"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="download-btn" id="downloadBtn">📥 Download Detailed Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPredictions = null;
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadSection = document.getElementById('uploadSection');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const errorSection = document.getElementById('errorSection');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        uploadBtn.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop functionality
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                showError('Please select a CSV file.');
+                return;
+            }
+
+            if (file.size > 100 * 1024 * 1024) {
+                showError('File size must be less than 100MB.');
+                return;
+            }
+
+            uploadFile(file);
+        }
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show loading state
+            loadingSection.style.display = 'flex';
+            uploadBtn.disabled = true;
+            errorSection.innerHTML = '';
+            resultsSection.style.display = 'none';
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingSection.style.display = 'none';
+                uploadBtn.disabled = false;
+
+                if (data.success) {
+                    currentPredictions = data.predictions;
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'An error occurred during analysis.');
+                }
+            })
+            .catch(error => {
+                loadingSection.style.display = 'none';
+                uploadBtn.disabled = false;
+                showError('Network error: ' + error.message);
+            });
+        }
+
+        function displayResults(data) {
+            const { predictions, summary } = data;
+
+            // Update summary cards
+            document.getElementById('totalSamples').textContent = summary.total_samples.toLocaleString();
+            document.getElementById('avgConfidence').textContent = Math.round(summary.average_confidence * 100) + '%';
+            document.getElementById('highConfidence').textContent = summary.high_confidence_count.toLocaleString();
+            
+            // Count threats (non-BENIGN)
+            const threats = Object.entries(summary.attack_distribution)
+                .filter(([key, value]) => key !== 'BENIGN')
+                .reduce((sum, [key, value]) => sum + value, 0);
+            document.getElementById('threats').textContent = threats.toLocaleString();
+
+            // Display attack distribution
+            const distributionDiv = document.getElementById('attackDistribution');
+            distributionDiv.innerHTML = '';
+
+            Object.entries(summary.attack_distribution)
+                .sort(([,a], [,b]) => b - a)
+                .forEach(([attackType, count]) => {
+                    const item = document.createElement('div');
+                    item.className = 'attack-item';
+                    
+                    const confidence = getAverageConfidenceForType(predictions, attackType);
+                    const confidenceClass = confidence > 0.8 ? 'confidence-high' : 
+                                          confidence > 0.5 ? 'confidence-medium' : 'confidence-low';
+                    
+                    item.innerHTML = `
+                        <span class="attack-name">
+                            ${attackType}
+                            <span class="confidence-indicator ${confidenceClass}"></span>
+                        </span>
+                        <span class="attack-count">${count.toLocaleString()}</span>
+                    `;
+                    distributionDiv.appendChild(item);
+                });
+
+            resultsSection.style.display = 'block';
+        }
+
+        function getAverageConfidenceForType(predictions, attackType) {
+            const filtered = predictions.filter(p => p.Predicted_Attack_Type === attackType);
+            if (filtered.length === 0) return 0;
+            return filtered.reduce((sum, p) => sum + p.Confidence_Score, 0) / filtered.length;
+        }
+
+        function showError(message) {
+            errorSection.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
+        // Download functionality
+        downloadBtn.addEventListener('click', () => {
+            if (!currentPredictions) return;
+
+            fetch('/download_results', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ predictions: currentPredictions })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `network_intrusion_predictions_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                showError('Error downloading results: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -167,7 +167,22 @@ class_mapping = pd.DataFrame({
 })
 class_mapping.to_csv('processed_data/class_mapping.csv', index=False)
 
-print(f"\nMulticlass predictions saved to: {os.path.abspath(results_file)}")
+# 2.10 Save the trained model and preprocessing components
+print("\nSaving trained model and preprocessing components...")
+model_file = f'model_checkpoint/trained_model_{timestamp}.pkl'
+scaler_file = f'model_checkpoint/scaler_{timestamp}.pkl'
+
+# Save the trained model
+with open(model_file, 'wb') as f:
+    pickle.dump(rf_classifier, f)
+
+# Save the scaler
+with open(scaler_file, 'wb') as f:
+    pickle.dump(scaler, f)
+
+print(f"Trained model saved to: {os.path.abspath(model_file)}")
+print(f"Scaler saved to: {os.path.abspath(scaler_file)}")
+print(f"Multiclass predictions saved to: {os.path.abspath(results_file)}")
 print(f"Class mapping saved to: {os.path.abspath('processed_data/class_mapping.csv')}")
 
 print("\n" + "="*80)
