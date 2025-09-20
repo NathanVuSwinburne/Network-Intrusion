@@ -9,6 +9,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Dataset directories
-network-intrusion-dataset/
-processed_data/
+processed_data/*
+network-intrusion-dataset/*
