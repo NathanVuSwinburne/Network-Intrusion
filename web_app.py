@@ -15,7 +15,7 @@ import tempfile
 
 app = Flask(__name__)
 app.secret_key = 'network_intrusion_detection_2024'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
 
 # Global predictor instance
 predictor = NetworkIntrusionPredictor()
@@ -99,6 +99,18 @@ def download_results():
         
     except Exception as e:
         return jsonify({'error': f'Error downloading results: {str(e)}'}), 500
+
+@app.route('/sample_format')
+def download_sample_format():
+    """Download sample CSV format file"""
+    try:
+        sample_file_path = 'sample_data/sample_submission.csv'
+        if os.path.exists(sample_file_path):
+            return send_file(sample_file_path, as_attachment=True, download_name='network_traffic_sample_format.csv')
+        else:
+            return jsonify({'error': 'Sample file not found'}), 404
+    except Exception as e:
+        return jsonify({'error': f'Error downloading sample: {str(e)}'}), 500
 
 @app.route('/health')
 def health_check():

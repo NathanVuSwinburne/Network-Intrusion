@@ -26,7 +26,7 @@ from datetime import datetime
 # ============================================================================
 
 # 1.1 Loading the dataset
-data1 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv')
+data1 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Monday-WorkingHours.pcap_ISCX.csv')
 data2 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Tuesday-WorkingHours.pcap_ISCX.csv')
 data3 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Wednesday-workingHours.pcap_ISCX.csv')
 data4 = pd.read_csv('C:/Users/Admin/PycharmProjects/Network Intrusion/network-intrusion-dataset/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv')

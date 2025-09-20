@@ -245,7 +245,25 @@
         <div class="upload-section" id="uploadSection">
             <div class="upload-icon">📁</div>
             <h3>Drop your CSV file here or click to browse</h3>
-            <p style="margin: 15px 0; color: #666;">Supported format: CSV files up to 100MB</p>
+            <p style="margin: 15px 0; color: #666;">Supported format: CSV files up to 200MB</p>
+            <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: left;">
+                <h4 style="color: #667eea; margin-bottom: 10px;">📋 Required CSV Format:</h4>
+                <p style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    • Your CSV must contain the <strong>45 selected network traffic features</strong>
+                </p>
+                <p style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    • Key features: Flow Duration, Total Fwd Packets, Fwd Packet Length Min, Flow Packets/s, etc.
+                </p>
+                <p style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    • Missing features will be filled with zeros automatically
+                </p>
+                <p style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    • Optional: Include 'Label' column for comparison (BENIGN, DDoS, DoS Hulk, etc.)
+                </p>
+                <p style="font-size: 0.9em; color: #555;">
+                    • <a href="/sample_format" style="color: #667eea; text-decoration: none;">📄 Download sample format</a>
+                </p>
+            </div>
             <input type="file" id="fileInput" class="file-input" accept=".csv">
             <button class="upload-btn" id="uploadBtn">Choose File</button>
             
@@ -341,8 +359,8 @@
                 return;
             }
 
-            if (file.size > 100 * 1024 * 1024) {
-                showError('File size must be less than 100MB.');
+            if (file.size > 200 * 1024 * 1024) {
+                showError('File size must be less than 200MB.');
                 return;
             }
 
