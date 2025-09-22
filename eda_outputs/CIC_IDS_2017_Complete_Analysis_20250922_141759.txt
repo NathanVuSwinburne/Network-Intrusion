@@ -1,0 +1,206 @@
+CIC-IDS-2017 Dataset - Complete EDA Analysis with Full Output Capture
+======================================================================
+🚀 CIC-IDS-2017 Dataset - Complete EDA Analysis
+============================================================
+📅 Analysis started at: 2025-09-22 14:17:59
+============================================================
+🔄 Loading CIC-IDS-2017 dataset...
+   📁 Loading Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv...
+   📁 Loading Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv...
+   📁 Loading Friday-WorkingHours-Morning.pcap_ISCX.csv...
+   📁 Loading Monday-WorkingHours.pcap_ISCX.csv...
+   📁 Loading Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv...
+   📁 Loading Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv...
+   📁 Loading Tuesday-WorkingHours.pcap_ISCX.csv...
+   📁 Loading Wednesday-workingHours.pcap_ISCX.csv...
+✅ Successfully loaded 8 files
+📊 Total dataset shape: (2830743, 80)
+
+============================================================
+📋 BASIC DATASET INFORMATION
+============================================================
+Dataset Shape: (2830743, 80)
+Memory Usage: 2078.09 MB
+Number of Files: 8
+
+📁 File Information:
+   Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv: 225,745 rows, 73.6 MB
+   Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv: 286,467 rows, 73.3 MB
+   Friday-WorkingHours-Morning.pcap_ISCX.csv: 191,033 rows, 55.6 MB
+   Monday-WorkingHours.pcap_ISCX.csv: 529,918 rows, 168.7 MB
+   Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv: 288,602 rows, 79.3 MB
+   Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv: 170,366 rows, 49.6 MB
+   Tuesday-WorkingHours.pcap_ISCX.csv: 445,909 rows, 128.8 MB
+   Wednesday-workingHours.pcap_ISCX.csv: 692,703 rows, 214.7 MB
+
+📊 Columns (80):
+   Numeric columns: 78
+   Object columns: 2
+
+📝 Sample Column Names:
+    1.  Destination Port
+    2.  Flow Duration
+    3.  Total Fwd Packets
+    4.  Total Backward Packets
+    5. Total Length of Fwd Packets
+    6.  Total Length of Bwd Packets
+    7.  Fwd Packet Length Max
+    8.  Fwd Packet Length Min
+    9.  Fwd Packet Length Mean
+   10.  Fwd Packet Length Std
+   ... and 70 more columns
+
+⚠️  Missing Values:
+              Missing Count  Percentage
+Flow Bytes/s           1358    0.047973
+
+🔢 Data Types:
+   int64: 54 columns
+   float64: 24 columns
+   object: 2 columns
+
+============================================================
+🎯 ATTACK TYPE DISTRIBUTION ANALYSIS
+============================================================
+✅ Using label column: ' Label'
+
+📊 Attack Type Distribution (All 15 types):
+--------------------------------------------------------------------------------
+   BENIGN                              |  2,273,097 (80.30%) | Normal Traffic
+   DoS Hulk                            |    231,073 ( 8.16%) | Denial of Service
+   PortScan                            |    158,930 ( 5.61%) | Port Scanning
+   DDoS                                |    128,027 ( 4.52%) | Denial of Service
+   DoS GoldenEye                       |     10,293 ( 0.36%) | Denial of Service
+   FTP-Patator                         |      7,938 ( 0.28%) | Brute Force
+   SSH-Patator                         |      5,897 ( 0.21%) | Brute Force
+   DoS slowloris                       |      5,796 ( 0.20%) | Denial of Service
+   DoS Slowhttptest                    |      5,499 ( 0.19%) | Denial of Service
+   Bot                                 |      1,966 ( 0.07%) | Botnet Activity
+   Web Attack � Brute Force            |      1,507 ( 0.05%) | Other
+   Web Attack � XSS                    |        652 ( 0.02%) | Other
+   Infiltration                        |         36 ( 0.00%) | Infiltration Attack
+   Web Attack � Sql Injection          |         21 ( 0.00%) | Other
+   Heartbleed                          |         11 ( 0.00%) | Vulnerability Exploit
+
+🏷️  Attack Categories Summary:
+------------------------------------------------------------
+   Normal Traffic                 |  2,273,097 (80.30%)
+   Denial of Service              |    380,688 (13.45%)
+   Port Scanning                  |    158,930 ( 5.61%)
+   Brute Force                    |     13,835 ( 0.49%)
+   Other                          |      2,180 ( 0.08%)
+   Botnet Activity                |      1,966 ( 0.07%)
+   Infiltration Attack            |         36 ( 0.00%)
+   Vulnerability Exploit          |         11 ( 0.00%)
+
+============================================================
+🌐 NETWORK FLOW CHARACTERISTICS
+============================================================
+📊 Flow-related columns found: 40
+   Flow columns:
+    1.  Flow Duration
+    2.  Total Fwd Packets
+    3.  Total Backward Packets
+    4. Total Length of Fwd Packets
+    5.  Total Length of Bwd Packets
+    6.  Fwd Packet Length Max
+    7.  Fwd Packet Length Min
+    8.  Fwd Packet Length Mean
+    9.  Fwd Packet Length Std
+   10. Bwd Packet Length Max
+   11.  Bwd Packet Length Min
+   12.  Bwd Packet Length Mean
+   13.  Bwd Packet Length Std
+   14. Flow Bytes/s
+   15.  Flow Packets/s
+   ... and 25 more flow columns
+
+🔢 Numeric Flow Statistics (Top 10 columns):
+----------------------------------------------------------------------------------------------------
+        Flow Duration   Total Fwd Packets   Total Backward Packets  Total Length of Fwd Packets   Total Length of Bwd Packets   Fwd Packet Length Max   Fwd Packet Length Min   Fwd Packet Length Mean   Fwd Packet Length Std  Bwd Packet Length Max
+count    2.830743e+06        2.830743e+06             2.830743e+06                 2.830743e+06                  2.830743e+06            2.830743e+06            2.830743e+06             2.830743e+06            2.830743e+06           2.830743e+06
+mean     1.478566e+07        9.361160e+00             1.039377e+01                 5.493024e+02                  1.616264e+04            2.075999e+02            1.871366e+01             5.820194e+01            6.891013e+01           8.708495e+02
+std      3.365374e+07        7.496728e+02             9.973883e+02                 9.993589e+03                  2.263088e+06            7.171848e+02            6.033935e+01             1.860912e+02            2.811871e+02           1.946367e+03
+min     -1.300000e+01        1.000000e+00             0.000000e+00                 0.000000e+00                  0.000000e+00            0.000000e+00            0.000000e+00             0.000000e+00            0.000000e+00           0.000000e+00
+25%      1.550000e+02        2.000000e+00             1.000000e+00                 1.200000e+01                  0.000000e+00            6.000000e+00            0.000000e+00             6.000000e+00            0.000000e+00           0.000000e+00
+50%      3.131600e+04        2.000000e+00             2.000000e+00                 6.200000e+01                  1.230000e+02            3.700000e+01            2.000000e+00             3.400000e+01            0.000000e+00           7.900000e+01
+75%      3.204828e+06        5.000000e+00             4.000000e+00                 1.870000e+02                  4.820000e+02            8.100000e+01            3.600000e+01             5.000000e+01            2.616295e+01           2.800000e+02
+max      1.200000e+08        2.197590e+05             2.919220e+05                 1.290000e+07                  6.554530e+08            2.482000e+04            2.325000e+03             5.940857e+03            7.125597e+03           1.953000e+04
+
+🔍 Zero Values Analysis:
+----------------------------------------------------------------------
+    Flow Duration                               :    2,867 (  0.1%)
+    Total Fwd Packets                           :        0 (  0.0%)
+    Total Backward Packets                      :  453,519 ( 16.0%)
+   Total Length of Fwd Packets                  :  449,170 ( 15.9%)
+    Total Length of Bwd Packets                 :  707,746 ( 25.0%)
+    Fwd Packet Length Max                       :  449,170 ( 15.9%)
+    Fwd Packet Length Min                       : 1,317,226 ( 46.5%)
+    Fwd Packet Length Mean                      :  449,170 ( 15.9%)
+    Fwd Packet Length Std                       : 1,850,684 ( 65.4%)
+   Bwd Packet Length Max                        :  707,746 ( 25.0%)
+    Bwd Packet Length Min                       : 1,437,867 ( 50.8%)
+    Bwd Packet Length Mean                      :  707,746 ( 25.0%)
+    Bwd Packet Length Std                       : 2,026,514 ( 71.6%)
+   Flow Bytes/s                                 :  355,767 ( 12.6%)
+    Flow Packets/s                              :        0 (  0.0%)
+
+============================================================
+🔌 PORT ANALYSIS
+============================================================
+📊 Port columns found: [' Destination Port']
+🎯 Analyzing column:  Destination Port
+
+🔝 Top 25 Destination Ports:
+----------------------------------------------------------------------
+   Port 53     | DNS          |    957,971 (33.84%)
+   Port 80     | HTTP         |    618,934 (21.86%)
+   Port 443    | HTTPS        |    505,710 (17.86%)
+   Port 123    | Unknown      |     23,880 ( 0.84%)
+   Port 22     | SSH          |     16,941 ( 0.60%)
+   Port 21     | FTP          |     13,522 ( 0.48%)
+   Port 137    | Unknown      |      7,917 ( 0.28%)
+   Port 389    | Unknown      |      6,406 ( 0.23%)
+   Port 88     | Unknown      |      5,580 ( 0.20%)
+   Port 465    | Unknown      |      3,817 ( 0.13%)
+   Port 139    | NetBIOS      |      2,881 ( 0.10%)
+   Port 8080   | Unknown      |      2,777 ( 0.10%)
+   Port 3268   | Unknown      |      2,567 ( 0.09%)
+   Port 445    | SMB          |      2,111 ( 0.07%)
+   Port 0      | Unknown      |      1,696 ( 0.06%)
+   Port 138    | Unknown      |      1,612 ( 0.06%)
+   Port 135    | RPC          |      1,412 ( 0.05%)
+   Port 49666  | Unknown      |        786 ( 0.03%)
+   Port 5353   | Unknown      |        697 ( 0.02%)
+   Port 5355   | Unknown      |        386 ( 0.01%)
+   Port 1124   | Unknown      |        362 ( 0.01%)
+   Port 444    | Unknown      |        361 ( 0.01%)
+   Port 1900   | Unknown      |        354 ( 0.01%)
+   Port 1042   | Unknown      |        348 ( 0.01%)
+   Port 1041   | Unknown      |        345 ( 0.01%)
+
+============================================================
+🔗 FEATURE CORRELATION ANALYSIS
+============================================================
+📊 Analyzing correlations for 78 numeric features
+🔍 Using sample of 20 columns for correlation analysis
+
+🔍 Highly Correlated Feature Pairs (|correlation| > 0.8):
+------------------------------------------------------------------------------------------
+    Total Fwd Packets             ↔  Total Backward Packets        |  0.999
+    Total Fwd Packets             ↔  Total Length of Bwd Packets   |  0.997
+    Total Backward Packets        ↔  Total Length of Bwd Packets   |  0.994
+   Bwd Packet Length Max          ↔  Bwd Packet Length Std         |  0.983
+    Fwd Packet Length Max         ↔  Fwd Packet Length Std         |  0.968
+   Bwd Packet Length Max          ↔  Bwd Packet Length Mean        |  0.959
+    Bwd Packet Length Mean        ↔  Bwd Packet Length Std         |  0.942
+    Flow IAT Std                  ↔  Flow IAT Max                  |  0.938
+    Fwd Packet Length Mean        ↔  Fwd Packet Length Std         |  0.894
+    Fwd Packet Length Max         ↔  Fwd Packet Length Mean        |  0.888
+
+============================================================
+✅ COMPLETE ANALYSIS FINISHED!
+============================================================
+📅 Analysis completed at: 2025-09-22 14:18:15
+📁 All output has been saved to the eda_outputs directory
+============================================================

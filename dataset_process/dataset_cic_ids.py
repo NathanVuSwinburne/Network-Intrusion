@@ -34,12 +34,12 @@ def infer_protocol(row):
 
 def infer_state(row):
     # best attempt at inferring state on existing information
-    syn = row.get(' SYN Flag Count', 0)
-    ack = row.get(' ACK Flag Count', 0)
+    syn = row.get('SYN Flag Count', 0)
+    ack = row.get('ACK Flag Count', 0)
     fin = row.get('FIN Flag Count', 0)
-    rst = row.get(' RST Flag Count', 0)
-    fwd = row.get(' Total Fwd Packets', 0)
-    bwd = row.get(' Total Backward Packets', 0)
+    rst = row.get('RST Flag Count', 0)
+    fwd = row.get('Total Fwd Packets', 0)
+    bwd = row.get('Total Backward Packets', 0)
 
     if rst > 0:
         return 'RST'
@@ -56,7 +56,7 @@ def infer_state(row):
     elif fwd > 0 and bwd > 0:
         return 'TXD'  # data exchange in both directions
     else:
-        return '-'  # unknown
+        return 'UNKNOWN'  # unknown
 
 merged_ds2['state'] = merged_ds2.apply(infer_state, axis=1)
 merged_ds2['protocol'] = merged_ds2.apply(infer_protocol, axis=1)
