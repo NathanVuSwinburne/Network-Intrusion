@@ -10,7 +10,7 @@ plotly>=5.0.0
 
 # Additional utilities
 pathlib2>=2.3.0  # For Python compatibility
-warnings  # Built-in module
+# warnings  # Built-in module
 
 # Optional: For enhanced performance
 scipy>=1.7.0
