@@ -223,7 +223,7 @@ results = pd.DataFrame({
 })
 
 # Save results to CSV
-results_file = f'results/multiclass_predictions_{timestamp}.csv'
+results_file = f'results/XGBoost_multiclass_predictions_{timestamp}.csv'
 results.to_csv(results_file, index=False)
 
 # Save class mapping
