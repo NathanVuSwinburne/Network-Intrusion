@@ -11,3 +11,5 @@ wheels/
 
 processed_data/*
 network-intrusion-dataset/*
+model_checkpoint/*
+results/*

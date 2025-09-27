@@ -1,0 +1,24 @@
+# Network Intrusion Detection System - Complete Requirements
+# Core data analysis libraries
+pandas>=1.5.0
+numpy>=1.21.0
+
+# Machine learning libraries
+scikit-learn>=1.0.0
+scipy>=1.7.0
+
+# Visualization libraries
+matplotlib>=3.5.0
+seaborn>=0.11.0
+plotly>=5.0.0
+
+# Web application (for prediction service)
+Flask>=2.0.0
+Werkzeug>=2.0.0
+
+# Additional utilities
+pathlib2>=2.3.0
+joblib>=1.0.0  # For model serialization
+
+# Optional: Enhanced performance
+numba>=0.56.0  # For faster numerical computations

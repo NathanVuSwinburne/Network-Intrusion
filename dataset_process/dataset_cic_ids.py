@@ -36,19 +36,34 @@ CSV_FILES = [
     "Wednesday-workingHours.pcap_ISCX.csv",
 ]
 
+print("=" * 80)
+print("CIC-IDS-2017 DATASET PROCESSING WITH DUPLICATE REMOVAL")
+print("=" * 80)
+
 # -----------------------------------------------------------------------------
 # Ingestion
 # -----------------------------------------------------------------------------
 frames = []
+total_rows_before = 0
+
 for fname in CSV_FILES:
     path = DATASET_DIR / fname
+    print(f"\nProcessing: {fname}")
+    
     df_part = pd.read_csv(path, usecols=USECOLS, skipinitialspace=True)
     # Strip any residual whitespace in header names (safety)
     df_part.columns = df_part.columns.str.strip()
+    
+    rows_before = len(df_part)
+    total_rows_before += rows_before
+    print(f"  Rows loaded: {rows_before:,}")
+    
     frames.append(df_part)
 
 # Concatenate all daily CSVs
+print(f"\nConcatenating {len(CSV_FILES)} files...")
 cic_df = pd.concat(frames, ignore_index=True)
+print(f"Total rows before duplicate removal: {len(cic_df):,}")
 
 # Standardise column names -----------------------------------------------------
 cic_df.rename(columns=RAW_TO_CANON, inplace=True)
@@ -95,14 +110,60 @@ def infer_state(row: pd.Series) -> str:
     return "UNKNOWN"
 
 # -----------------------------------------------------------------------------
-# Derived columns & final tidy-up
+# Derived columns & duplicate removal
 # -----------------------------------------------------------------------------
+print("\nGenerating derived columns...")
 cic_df["state"] = cic_df.apply(infer_state, axis=1)
 cic_df["protocol"] = cic_df.apply(infer_protocol, axis=1)
 
-# Convert µs ➜ s
+# Convert µs  s
 cic_df["duration"] = cic_df["duration"] / 1_000_000
 cic_df["dataset_id"] = 1
+
+# Define columns for duplicate detection (exclude dataset_id)
+DUPLICATE_CHECK_COLS = [
+    "destination_port",
+    "protocol", 
+    "state",
+    "duration",
+    "source_bytes",
+    "dest_bytes", 
+    "source_pkts",
+    "dest_pkts",
+    "mean_seg_size_fwd",
+    "mean_seg_size_bwd",
+    "tcp_win_fwd",
+    "tcp_win_bwd",
+    "label"
+]
+
+print(f"\nChecking for duplicates based on {len(DUPLICATE_CHECK_COLS)} columns...")
+print("Columns used for duplicate detection:")
+for col in DUPLICATE_CHECK_COLS:
+    print(f"  - {col}")
+
+# Remove duplicates
+rows_before_dedup = len(cic_df)
+cic_df_clean = cic_df.drop_duplicates(subset=DUPLICATE_CHECK_COLS, keep='first')
+rows_after_dedup = len(cic_df_clean)
+duplicates_removed = rows_before_dedup - rows_after_dedup
+
+print(f"\nDUPLICATE REMOVAL RESULTS:")
+print(f"  Rows before: {rows_before_dedup:,}")
+print(f"  Rows after:  {rows_after_dedup:,}")
+print(f"  Duplicates removed: {duplicates_removed:,}")
+print(f"  Duplicate percentage: {(duplicates_removed/rows_before_dedup)*100:.2f}%")
+
+# -----------------------------------------------------------------------------
+# Final dataset statistics
+# -----------------------------------------------------------------------------
+print(f"\nFINAL DATASET STATISTICS:")
+print(f"  Total unique rows: {len(cic_df_clean):,}")
+print(f"  Attack type distribution:")
+attack_counts = cic_df_clean['label'].value_counts()
+for attack_type, count in attack_counts.items():
+    percentage = (count / len(cic_df_clean)) * 100
+    print(f"    {attack_type}: {count:,} ({percentage:.2f}%)")
 
 EXPORT_COLS = [
     "destination_port",
@@ -121,4 +182,12 @@ EXPORT_COLS = [
     "dataset_id",
 ]
 
-cic_df[EXPORT_COLS].to_csv("processed_data/merged_cic_ids_2017.csv", index=False, header=True)
+# Save with index (reset index to create a clean 0-based index)
+cic_df_final = cic_df_clean[EXPORT_COLS].reset_index(drop=True)
+output_path = "processed_data/merged_cic_ids_2017.csv"
+cic_df_final.to_csv(output_path, index=False, header=True)
+
+print(f"\nDataset saved to: {output_path}")
+print(f"Index column added: Yes (0-based integer index)")
+print(f"Final shape: {cic_df_final.shape}")
+print("\n" + "=" * 80)
