@@ -121,38 +121,33 @@ sample_weights = np.array([class_weight_dict[y] for y in y_train])
 # Train XGBoost classifier with sample weights
 print("Training XGBoost classifier with sample weights...")
 xgb_clf = xgb.XGBClassifier(
-    # Core
     objective="multi:softprob",
     num_class=16,
-    tree_method="hist",          # "gpu_hist" if GPU available
-    eval_metric="mlogloss",
-    
-    # Tuned hyperparams
-    n_estimators=800,            # many trees, balanced by smaller LR
-    learning_rate=0.05,          # smaller step size for stability
-    max_depth=9,                 # deeper splits to capture rare-class patterns
-    min_child_weight=3,          # less strict, lets model capture minority classes
-    gamma=0.2,                   # min loss reduction required to split
-    subsample=0.8,               # row sampling
-    colsample_bytree=0.8,        # feature sampling
-    colsample_bylevel=0.8,       # per-level feature sampling
-    colsample_bynode=0.8,
-    
-    # Regularization
-    reg_alpha=0.5,               # stronger L1 regularization → sparsity helps prevent noise
-    reg_lambda=1.5,              # stronger L2 to stabilize
-    
-    # Imbalance handling
-    max_delta_step=1,            # stabilizes updates for rare classes
-    
-    # Efficiency
+    tree_method="hist",      # "gpu_hist" if GPU available
+    n_estimators=400,
+    learning_rate=0.05,
+    max_depth=9,
+    min_child_weight=3,
+    gamma=0.2,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_alpha=0.5,
+    reg_lambda=1.5,
+    max_delta_step=1,
     n_jobs=-1,
-    random_state=42
+    random_state=42,
+    early_stopping_rounds=50,
+    eval_metric="mlogloss"   
 )
 
-# 2.4 Train the model
-print("\nTraining the multiclass XGBoost model with sample weights...")
-xgb_clf.fit(X_train_scaled, y_train, sample_weight=sample_weights)
+xgb_clf.fit(
+    X_train_scaled, y_train,
+    sample_weight=sample_weights,
+    eval_set=[(X_test_scaled, y_test)],
+    verbose=50
+)
+
+
 
 # 2.5 Make predictions on test set
 print("Making predictions...")
