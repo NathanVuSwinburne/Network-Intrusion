@@ -9,8 +9,4 @@ wheels/
 # Virtual environments
 .venv
 
-multi_class_processed_data/*
-network-intrusion-dataset/*
-model_checkpoint/*
-Multiclass_results/*
-merged_data/*
+
