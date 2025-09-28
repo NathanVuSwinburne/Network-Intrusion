@@ -101,6 +101,10 @@ print(f"\nTotal features after engineering: {len(final_features)}")
 #Binarize Benign vs attack(0 - 1) 
 data['label'] = data['label'].apply(lambda x : 1 if x != 'BENIGN' else 0)
 
+# Create label encoder for target variable
+label_encoder = LabelEncoder()
+label_encoder.fit([0, 1])
+
 # Display basic info about the cleaned data
 print('\nData types and non-null counts:')
 print(data.info())
@@ -402,6 +406,10 @@ test_data = pd.concat([X_test, y_test], axis=1)
 test_file = f'data/processed_data_binary/X_test_binary_class_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
 
+# Save label encoder
+label_encoder_file = f'data/processed_data_binary/label_encoder_binary_class_{timestamp}.pkl'
+with open(label_encoder_file, 'wb') as f:
+    pickle.dump(label_encoder, f, pickle.HIGHEST_PROTOCOL)
 
 if 'protocol_encoder' in locals() and protocol_encoder is not None:
     protocol_encoder_file = f'data/processed_data_binary/protocol_encoder_binary_class_{timestamp}.pkl'
