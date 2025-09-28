@@ -435,7 +435,7 @@ class MergedDatasetEDA:
     def save_report(self):
         """Save the analysis report to file"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"eda_outputs/Merged_Dataset_EDA_Analysis_{timestamp}.txt"
+        filename = f"EDA/Outputs/Merged_Dataset_EDA_Analysis_{timestamp}.txt"
         
         try:
             with open(filename, 'w', encoding='utf-8') as f:
@@ -483,7 +483,7 @@ class MergedDatasetEDA:
 def main():
     """Main function to run the EDA"""
     # Dataset path
-    dataset_path = "processed_data/merged_datasets.csv"
+    dataset_path = "data/merged_data/merged_datasets.csv"
     
     # Create EDA instance and run analysis
     eda = MergedDatasetEDA(dataset_path)
@@ -491,7 +491,7 @@ def main():
     
     if success:
         print("\n🎉 Merged Dataset EDA completed successfully!")
-        print("📊 Check the eda_outputs/ directory for the detailed report.")
+        print("📊 Check the EDA/Outputs/ directory for the detailed report.")
     else:
         print("\n❌ EDA analysis failed. Please check the dataset path and try again.")
         sys.exit(1)

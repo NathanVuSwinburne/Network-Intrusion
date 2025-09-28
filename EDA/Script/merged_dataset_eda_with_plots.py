@@ -100,9 +100,9 @@ class MergedDatasetEDAWithPlots:
         ax4.tick_params(axis='x', rotation=45)
         
         plt.tight_layout()
-        plt.savefig('eda_outputs/attack_distribution_analysis.png', dpi=300, bbox_inches='tight')
+        plt.savefig('EDA/Outputs/attack_distribution_analysis.png', dpi=300, bbox_inches='tight')
         plt.show()
-        print("✓ Attack distribution plots saved to: eda_outputs/attack_distribution_analysis.png")
+        print("✓ Attack distribution plots saved to: EDA/Outputs/attack_distribution_analysis.png")
     
     def create_port_analysis_plots(self):
         """Create port analysis visualizations"""
@@ -152,9 +152,9 @@ class MergedDatasetEDAWithPlots:
         ax4.tick_params(axis='x', rotation=45)
         
         plt.tight_layout()
-        plt.savefig('eda_outputs/port_analysis.png', dpi=300, bbox_inches='tight')
+        plt.savefig('EDA/Outputs/port_analysis.png', dpi=300, bbox_inches='tight')
         plt.show()
-        print("✓ Port analysis plots saved to: eda_outputs/port_analysis.png")
+        print("✓ Port analysis plots saved to: EDA/Outputs/port_analysis.png")
     
     def create_traffic_analysis_plots(self):
         """Create traffic volume and timing analysis plots"""
@@ -198,9 +198,9 @@ class MergedDatasetEDAWithPlots:
         ax4.set_ylabel('Frequency', fontsize=12)
         
         plt.tight_layout()
-        plt.savefig('eda_outputs/traffic_analysis.png', dpi=300, bbox_inches='tight')
+        plt.savefig('EDA/Outputs/traffic_analysis.png', dpi=300, bbox_inches='tight')
         plt.show()
-        print("✓ Traffic analysis plots saved to: eda_outputs/traffic_analysis.png")
+        print("✓ Traffic analysis plots saved to: EDA/Outputs/traffic_analysis.png")
     
     def create_correlation_heatmap(self):
         """Create correlation heatmap for numerical features"""
@@ -221,9 +221,9 @@ class MergedDatasetEDAWithPlots:
         
         plt.title('Feature Correlation Heatmap', fontsize=16, fontweight='bold', pad=20)
         plt.tight_layout()
-        plt.savefig('eda_outputs/correlation_heatmap.png', dpi=300, bbox_inches='tight')
+        plt.savefig('EDA/Outputs/correlation_heatmap.png', dpi=300, bbox_inches='tight')
         plt.show()
-        print("✓ Correlation heatmap saved to: eda_outputs/correlation_heatmap.png")
+        print("✓ Correlation heatmap saved to: EDA/Outputs/correlation_heatmap.png")
     
     def create_cybersecurity_insights_plots(self):
         """Create cybersecurity-specific visualization insights"""
@@ -275,9 +275,9 @@ class MergedDatasetEDAWithPlots:
         ax4.legend(['Forward', 'Backward'])
         
         plt.tight_layout()
-        plt.savefig('eda_outputs/cybersecurity_insights.png', dpi=300, bbox_inches='tight')
+        plt.savefig('EDA/Outputs/cybersecurity_insights.png', dpi=300, bbox_inches='tight')
         plt.show()
-        print("✓ Cybersecurity insights plots saved to: eda_outputs/cybersecurity_insights.png")
+        print("✓ Cybersecurity insights plots saved to: EDA/Outputs/cybersecurity_insights.png")
     
     def run_complete_analysis_with_plots(self):
         """Run the complete EDA analysis with visualizations"""
@@ -299,7 +299,7 @@ class MergedDatasetEDAWithPlots:
         print("\n" + "="*80)
         print("Enhanced EDA with Visualizations Complete!")
         print("="*80)
-        print("📊 All plots have been saved to the eda_outputs/ directory:")
+        print("📊 All plots have been saved to the EDA/Outputs/ directory:")
         print("  • attack_distribution_analysis.png")
         print("  • port_analysis.png") 
         print("  • traffic_analysis.png")
@@ -311,7 +311,7 @@ class MergedDatasetEDAWithPlots:
 def main():
     """Main function to run the enhanced EDA with plots"""
     # Dataset path
-    dataset_path = "processed_data/merged_datasets.csv"
+    dataset_path = "data/merged_data/merged_datasets.csv"
     
     # Create EDA instance and run analysis
     eda = MergedDatasetEDAWithPlots(dataset_path)
@@ -319,7 +319,7 @@ def main():
     
     if success:
         print("\n🎉 Enhanced EDA with visualizations completed successfully!")
-        print("📈 Check the eda_outputs/ directory for all generated plots and insights.")
+        print("📈 Check the EDA/Outputs/ directory for all generated plots and insights.")
     else:
         print("\n❌ EDA analysis failed. Please check the dataset path and try again.")
 

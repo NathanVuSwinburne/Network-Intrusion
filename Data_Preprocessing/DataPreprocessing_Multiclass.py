@@ -23,7 +23,7 @@ from datetime import datetime
 # ============================================================================
 
 # 1.1 Loading the dataset
-data = pd.read_csv('processed_data/merged_datasets.csv')
+data = pd.read_csv('data/merged_data/merged_datasets.csv')
 
 # Drop duplicate rows
 print("Dropping duplicate rows...")
@@ -113,6 +113,9 @@ data.rename(columns = col_names, inplace = True)
 print("Cleaning up label whitespace...")
 data['label'] = data['label'].str.strip()
 
+# Drop all rows "BENIGN" in label column
+print("Dropping all rows with label 'BENIGN'...")
+data = data[data['label'] != 'BENIGN']
 
 
 # Overview of Columns
@@ -440,38 +443,38 @@ X_test = X_test.astype(np.float32)
 
 # Save processed data
 print("\nSaving processed data...")
-os.makedirs('processed_data', exist_ok=True)
+os.makedirs('data/processed_data_multi', exist_ok=True)
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Save training data
 train_data = pd.concat([X_train, y_train], axis=1)
-train_file = f'processed_data/X_train_hybrid_{timestamp}.csv'
+train_file = f'data/processed_data_multi/X_train_multi_class_{timestamp}.csv'
 train_data.to_csv(train_file, index=False)
 
 # Save test data
 test_data = pd.concat([X_test, y_test], axis=1)
-test_file = f'processed_data/X_test_hybrid_{timestamp}.csv'
+test_file = f'data/processed_data_multi/X_test_multi_class_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
 
 # Save encoders
-le_file = f'processed_data/label_encoder_hybrid_{timestamp}.pkl'
+le_file = f'data/processed_data_multi/label_encoder_multi_class_{timestamp}.pkl'
 with open(le_file, 'wb') as f:
     pickle.dump(le, f, pickle.HIGHEST_PROTOCOL)
 
 if 'protocol_encoder' in locals() and protocol_encoder is not None:
-    protocol_encoder_file = f'processed_data/protocol_encoder_hybrid_{timestamp}.pkl'
+    protocol_encoder_file = f'data/processed_data_multi/protocol_encoder_multi_class_{timestamp}.pkl'
     with open(protocol_encoder_file, 'wb') as f:
         pickle.dump(protocol_encoder, f, pickle.HIGHEST_PROTOCOL)
     print(f"Protocol encoder saved to: {os.path.abspath(protocol_encoder_file)}")
 
 if 'state_encoder' in locals() and state_encoder is not None:
-    state_encoder_file = f'processed_data/state_encoder_hybrid_{timestamp}.pkl'
+    state_encoder_file = f'data/processed_data_multi/state_encoder_multi_class_{timestamp}.pkl'
     with open(state_encoder_file, 'wb') as f:
         pickle.dump(state_encoder, f, pickle.HIGHEST_PROTOCOL)
     print(f"State encoder saved to: {os.path.abspath(state_encoder_file)}")
 
 # Save feature selection details
-feature_selection_file = f'processed_data/feature_selection_report_hybrid_{timestamp}.txt'
+feature_selection_file = f'data/processed_data_multi/feature_selection_report_multi_class_{timestamp}.txt'
 with open(feature_selection_file, 'w') as f:
     f.write("HYBRID FEATURE SELECTION REPORT\n")
     f.write("="*50 + "\n\n")
@@ -489,7 +492,7 @@ with open(feature_selection_file, 'w') as f:
         f.write(f"{info['feature']:<25} | Corr: {info['correlation']:.3f} | RF: {info['rf_importance']:.4f} | MI: {info['mutual_info']:.4f} | Methods: {info['methods']}\n")
 
 # Save feature names
-feature_file = f'processed_data/selected_features_hybrid_{timestamp}.txt'
+feature_file = f'data/processed_data_multi/selected_features_hybrid_{timestamp}.txt'
 with open(feature_file, 'w') as f:
     for feature in selected_features:
         f.write(f"{feature}\n")

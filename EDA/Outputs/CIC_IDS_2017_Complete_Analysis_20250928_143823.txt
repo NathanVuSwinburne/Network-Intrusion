@@ -2,7 +2,7 @@ CIC-IDS-2017 Dataset - Complete EDA Analysis with Full Output Capture
 ======================================================================
 🚀 CIC-IDS-2017 Dataset - Complete EDA Analysis
 ============================================================
-📅 Analysis started at: 2025-09-22 14:17:59
+📅 Analysis started at: 2025-09-28 14:38:23
 ============================================================
 🔄 Loading CIC-IDS-2017 dataset...
    📁 Loading Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv...
@@ -201,6 +201,6 @@ max      1.200000e+08        2.197590e+05             2.919220e+05              
 ============================================================
 ✅ COMPLETE ANALYSIS FINISHED!
 ============================================================
-📅 Analysis completed at: 2025-09-22 14:18:15
-📁 All output has been saved to the eda_outputs directory
+📅 Analysis completed at: 2025-09-28 14:38:41
+📁 All output has been saved to the EDA/Outputs directory
 ============================================================

@@ -30,7 +30,7 @@ class OutputCapture:
         self.terminal.flush()
         
     def save_to_file(self):
-        output_dir = Path("eda_outputs")
+        output_dir = Path("EDA/Outputs")
         output_dir.mkdir(exist_ok=True)
         
         with open(output_dir / self.filename, 'w', encoding='utf-8') as f:
@@ -41,7 +41,7 @@ class CICIDSAnalyzer:
     Comprehensive analyzer for CIC-IDS-2017 dataset with complete output capture
     """
     
-    def __init__(self, dataset_path="network-intrusion-dataset/CIC_IDS_2017"):
+    def __init__(self, dataset_path="data/network-intrusion-dataset/CIC_IDS_2017"):
         self.dataset_path = Path(dataset_path)
         self.data = None
         self.file_info = {}
@@ -363,7 +363,7 @@ class CICIDSAnalyzer:
             print("✅ COMPLETE ANALYSIS FINISHED!")
             print("="*60)
             print(f"📅 Analysis completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            print("📁 All output has been saved to the eda_outputs directory")
+            print("📁 All output has been saved to the EDA/Outputs directory")
             print("="*60)
             
         except Exception as e:
@@ -394,7 +394,7 @@ def main():
         # Restore stdout and save output
         sys.stdout = output_capture.terminal
         output_capture.save_to_file()
-        print(f"\n✅ Complete analysis output saved to: eda_outputs/{output_filename}")
+        print(f"\n✅ Complete analysis output saved to: EDA/Outputs/{output_filename}")
 
 if __name__ == "__main__":
     main()

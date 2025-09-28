@@ -24,7 +24,7 @@ RAW_TO_CANON = {
 }
 
 USECOLS = list(RAW_TO_CANON.keys())
-DATASET_DIR = Path("network-intrusion-dataset/CIC_IDS_2017")
+DATASET_DIR = Path("data/network-intrusion-dataset/CIC_IDS_2017")
 CSV_FILES = [
     "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
     "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
@@ -184,7 +184,7 @@ EXPORT_COLS = [
 
 # Save with index (reset index to create a clean 0-based index)
 cic_df_final = cic_df_clean[EXPORT_COLS].reset_index(drop=True)
-output_path = "processed_data/merged_cic_ids_2017.csv"
+output_path = "data/merged_data/merged_cic_ids_2017.csv"
 cic_df_final.to_csv(output_path, index=False, header=True)
 
 print(f"\nDataset saved to: {output_path}")

@@ -6,10 +6,10 @@ print("=" * 80)
 
 # Column indices (zero-based) for UNSW-NB15 CSVs
 ds1_cols = [3, 4, 5, 6, 7, 8, 16, 17, 18, 19, 22, 23, 47]
-ds1_paths = ["network-intrusion-dataset/UNSW_NB15/UNSW-NB15_1.csv",
-       "network-intrusion-dataset/UNSW_NB15/UNSW-NB15_2.csv",
-       "network-intrusion-dataset/UNSW_NB15/UNSW-NB15_3.csv",
-       "network-intrusion-dataset/UNSW_NB15/UNSW-NB15_4.csv"]
+ds1_paths = ["data/network-intrusion-dataset/UNSW_NB15/UNSW-NB15_1.csv",
+       "data/network-intrusion-dataset/UNSW_NB15/UNSW-NB15_2.csv",
+       "data/network-intrusion-dataset/UNSW_NB15/UNSW-NB15_3.csv",
+       "data/network-intrusion-dataset/UNSW_NB15/UNSW-NB15_4.csv"]
 
 print(f"Processing {len(ds1_paths)} UNSW-NB15 files...")
 ds1_csvs = []
@@ -90,7 +90,7 @@ export_cols = [
 
 # Save with index
 merged_ds1_final = merged_ds1_clean[export_cols].reset_index(drop=True)
-output_path = "processed_data/merged_unsw_nb15.csv"
+output_path = "data/merged_data/merged_unsw_nb15.csv"
 merged_ds1_final.to_csv(output_path, index=False)
 
 print(f"\nDataset saved to: {output_path}")
