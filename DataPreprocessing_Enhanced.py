@@ -59,10 +59,6 @@ print(f"Total missing values after cleaning: {data.isnull().sum().sum()}")
 print(f"\nSTEP 2: Feature engineering...")
 print("-" * 40)
 
-# --- STEP 6: Feature engineering ---
-print(f"\nSTEP 6: Feature engineering...")
-print("-" * 40)
-
 # 1. Average packet size (forward + backward combined)
 data['avg_pkt_size'] = (data['source_bytes'] + data['dest_bytes']) / \
                        (data['source_pkts'] + data['dest_pkts'] + 1e-6)
