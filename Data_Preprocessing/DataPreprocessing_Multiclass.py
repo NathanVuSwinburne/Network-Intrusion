@@ -12,6 +12,7 @@ sns.set_theme(style='darkgrid')
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import mutual_info_classif
 from sklearn.model_selection import train_test_split
 import os
@@ -441,20 +442,31 @@ print("\nOptimizing memory usage...")
 X_train = X_train.astype(np.float32)
 X_test = X_test.astype(np.float32)
 
+# Apply scaling
+print("\nScaling data...")
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Convert scaled arrays back to DataFrames with proper column names
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=selected_features, index=X_train.index)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=selected_features, index=X_test.index)
+
 # Save processed data
 print("\nSaving processed data...")
 os.makedirs('data/processed_data_multi', exist_ok=True)
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Save training data
-train_data = pd.concat([X_train, y_train], axis=1)
-train_file = f'data/processed_data_multi/X_train_multi_class_{timestamp}.csv'
+train_data = pd.concat([X_train_scaled, y_train], axis=1)
+train_file = f'data/processed_data_multi/X_train_scaled_multi_class_{timestamp}.csv'
 train_data.to_csv(train_file, index=False)
 
 # Save test data
-test_data = pd.concat([X_test, y_test], axis=1)
-test_file = f'data/processed_data_multi/X_test_multi_class_{timestamp}.csv'
+test_data = pd.concat([X_test_scaled, y_test], axis=1)
+test_file = f'data/processed_data_multi/X_test_scaled_multi_class_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
+
 
 # Save encoders
 le_file = f'data/processed_data_multi/label_encoder_multi_class_{timestamp}.pkl'
@@ -506,8 +518,8 @@ print(f"Feature selection report saved to: {os.path.abspath(feature_selection_fi
 print("\n" + "="*80)
 print("HYBRID FEATURE SELECTION PREPROCESSING COMPLETED")
 print("="*80)
-print(f"Final training set shape: {X_train.shape}")
-print(f"Final test set shape: {X_test.shape}")
+print(f"Final training set shape: {X_train_scaled.shape}")
+print(f"Final test set shape: {X_test_scaled.shape}")
 print(f"Number of classes: {len(le.classes_)}")
 print(f"Selected features: {len(selected_features)}")
 print("="*80)

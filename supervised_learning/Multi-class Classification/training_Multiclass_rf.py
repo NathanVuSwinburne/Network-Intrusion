@@ -10,7 +10,6 @@ import glob
 import pickle
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
@@ -21,8 +20,8 @@ os.makedirs('results_multi/RandomForest', exist_ok=True)
 
 # 2.2 Load the latest processed data
 print("Loading processed data...")
-train_files = glob.glob('data/processed_data_multi/X_train_multi_class_*.csv')
-test_files = glob.glob('data/processed_data_multi/X_test_multi_class_*.csv')
+train_files = glob.glob('data/processed_data_multi/X_train_scaled_multi_class_*.csv')
+test_files = glob.glob('data/processed_data_multi/X_test_scaled_multi_class_*.csv')
 le_files = glob.glob('data/processed_data_multi/label_encoder_multi_class_*.pkl')
 protocol_encoder_files = glob.glob('data/processed_data_multi/protocol_encoder_multi_class_*.pkl')
 state_encoder_files = glob.glob('data/processed_data_multi/state_encoder_multi_class_*.pkl')
@@ -108,19 +107,14 @@ for class_idx, weight in class_weight_dict.items():
     class_name = le.inverse_transform([class_idx])[0]
     print(f"{class_name:<15}: {weight:.4f}")
 
-# Apply scaling
-print("\nScaling data...")
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
 
 # Train RandomForest classifier with class weights
 print("Training RandomForest classifier with class weights...")
 rf_classifier = RandomForestClassifier(
     n_estimators=100,                # Keep reasonable number of trees
-    max_depth=15,                    # Reasonable depth
-    min_samples_split=10,            # Prevent overfitting
-    min_samples_leaf=5,              # Prevent overfitting
+    max_depth=5,                    # Reasonable depth
+    min_samples_split=2,            # Prevent overfitting
+    min_samples_leaf=2,              # Prevent overfitting
     class_weight=class_weight_dict,  # Use calculated class weights
     random_state=42,
     n_jobs=-1,                       # Use all available cores
@@ -129,18 +123,17 @@ rf_classifier = RandomForestClassifier(
 
 # 2.4 Train the model
 print("\nTraining the multiclass model with class weights...")
-rf_classifier.fit(X_train_scaled, y_train)
+rf_classifier.fit(X_train, y_train)
 
 # 2.5 Make predictions on test set
 print("Making predictions...")
-y_pred = rf_classifier.predict(X_test_scaled)
+y_pred = rf_classifier.predict(X_test)
 
 # Save the trained model and all encoders
 model_file = f'models_checkpoint/multi/RandomForest_trained_model_{timestamp}.pkl'
 with open(model_file, 'wb') as f:
     pickle.dump({
         'model': rf_classifier,
-        'scaler': scaler,
         'label_encoder': le,
         'protocol_encoder': protocol_encoder,
         'state_encoder': state_encoder

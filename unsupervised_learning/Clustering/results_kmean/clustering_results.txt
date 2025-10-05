@@ -1,0 +1,44 @@
+================================================================================
+SIMPLIFIED K-MEANS CLUSTERING ANALYSIS RESULTS
+================================================================================
+
+Total Samples: 1,903,960
+Samples Used: 20,000
+Features: 16
+
+================================================================================
+DATASET STATISTICS
+================================================================================
+Training set: 1,157,346
+Test set: 746,614
+Merged set: 1,903,960
+
+Benign (0): 1,421,733 (74.67%)
+Attack (1): 482,227 (25.33%)
+
+================================================================================
+K-MEANS CLUSTERING RESULTS
+================================================================================
+Best K: 3
+Silhouette Score: 0.6029
+Davies-Bouldin Score: 0.5393
+Inertia: 10611.99
+
+Cluster Distribution:
+  Cluster 0: 7,050 (39.17%)
+  Cluster 1: 2,735 (15.19%)
+  Cluster 2: 8,215 (45.64%)
+
+All K Values Tested:
+  K=2: Silhouette=0.6015, Davies-Bouldin=0.5991, Inertia=25732
+  K=3: Silhouette=0.6029, Davies-Bouldin=0.5393, Inertia=10612
+  K=4: Silhouette=0.5759, Davies-Bouldin=0.5892, Inertia=7434
+  K=5: Silhouette=0.5920, Davies-Bouldin=0.6061, Inertia=5107
+  K=6: Silhouette=0.5957, Davies-Bouldin=0.5874, Inertia=4362
+
+================================================================================
+PCA RESULTS
+================================================================================
+Explained Variance (2D): 0.3017
+  Component 1: 0.1678
+  Component 2: 0.1339

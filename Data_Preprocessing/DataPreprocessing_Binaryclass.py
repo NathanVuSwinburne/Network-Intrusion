@@ -12,6 +12,7 @@ sns.set_theme(style='darkgrid')
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import mutual_info_classif
 from sklearn.model_selection import train_test_split
 import os
@@ -93,7 +94,7 @@ for feat in [
     print(f"  {feat}: mean={data[feat].mean():.3f}, std={data[feat].std():.3f}, "
           f"min={data[feat].min():.3f}, max={data[feat].max():.3f}")
 
-# Update final feature list if you keep a tracking variable
+# Update final feature list 
 final_features = list(data.columns)
 print(f"\nTotal features after engineering: {len(final_features)}")
 
@@ -377,19 +378,74 @@ print("="*60)
 selected_features = final_features
 
 # ============================================================================
-# TRAIN/TEST SPLIT AND SAVING
+# TRAIN/TEST SPLIT, DOWNSAMPLING, AND SCALING
 # ============================================================================
 
-# Split the data
+# Split the data (keep original imbalance for evaluation)
 X_train, X_test, y_train, y_test = train_test_split(
     X, data['label'], test_size=0.2, random_state=42, stratify=data['label']
 )
 print(f"\nDataset split - Training: {X_train.shape[0]} samples, Test: {X_test.shape[0]} samples")
 
+# ==============================================
+# Downsample Benign class (on training set only)
+# ==============================================
+print("\nDownsampling majority (Benign) class in training set...")
+
+train_df = pd.concat([X_train, y_train], axis=1)
+benign_train = train_df[train_df['label'] == 0]
+attack_train = train_df[train_df['label'] == 1]
+
+# Print before-downsampling info
+benign_count_before = len(benign_train)
+attack_count_before = len(attack_train)
+total_before = benign_count_before + attack_count_before
+print(f"\nBefore downsampling:")
+print(f"  Benign: {benign_count_before:,} ({benign_count_before / total_before * 100:.2f}%)")
+print(f"  Attack: {attack_count_before:,} ({attack_count_before / total_before * 100:.2f}%)")
+print(f"  Total : {total_before:,}")
+
+# Define desired ratio: 1 attack : 2 benign
+target_benign = int(len(attack_train) * 2)
+benign_downsampled = benign_train.sample(n=target_benign, random_state=42)
+
+train_balanced = pd.concat([benign_downsampled, attack_train], axis=0).sample(frac=1, random_state=42).reset_index(drop=True)
+
+X_train = train_balanced.drop(columns=['label'])
+y_train = train_balanced['label']
+
+# Print after-downsampling info
+benign_count_after = (y_train == 0).sum()
+attack_count_after = (y_train == 1).sum()
+total_after = benign_count_after + attack_count_after
+
+print(f"\nAfter downsampling:")
+print(f"  Benign: {benign_count_after:,} ({benign_count_after / total_after * 100:.2f}%)")
+print(f"  Attack: {attack_count_after:,} ({attack_count_after / total_after * 100:.2f}%)")
+print(f"  Total : {total_after:,}")
+print(f"  Downsampling reduced training set size by {100 * (1 - total_after / total_before):.1f}%")
+
+print(f"\nTest set remains untouched (real distribution): {y_test.value_counts().to_dict()}")
+
+# ==============================================
 # Memory optimization
+# ==============================================
 print("\nOptimizing memory usage...")
 X_train = X_train.astype(np.float32)
 X_test = X_test.astype(np.float32)
+
+# ==============================================
+# Scaling
+# ==============================================
+print("\nScaling data...")
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Convert scaled arrays back to DataFrames with proper column names
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=selected_features, index=X_train.index)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=selected_features, index=X_test.index)
+
 
 # Save processed data
 print("\nSaving processed data...")
@@ -397,14 +453,16 @@ os.makedirs('data/processed_data_binary', exist_ok=True)
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Save training data
-train_data = pd.concat([X_train, y_train], axis=1)
-train_file = f'data/processed_data_binary/X_train_binary_class_{timestamp}.csv'
+train_data = pd.concat([X_train_scaled, y_train], axis=1)
+train_file = f'data/processed_data_binary/X_train_scaled_binary_class_{timestamp}.csv'
 train_data.to_csv(train_file, index=False)
 
 # Save test data
-test_data = pd.concat([X_test, y_test], axis=1)
-test_file = f'data/processed_data_binary/X_test_binary_class_{timestamp}.csv'
+test_data = pd.concat([X_test_scaled, y_test], axis=1)
+test_file = f'data/processed_data_binary/X_test_scaled_binary_class_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
+
+
 
 # Save label encoder
 label_encoder_file = f'data/processed_data_binary/label_encoder_binary_class_{timestamp}.pkl'
