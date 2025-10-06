@@ -88,7 +88,7 @@ X_pca_cluster = pca_cluster.fit_transform(X_sample)
 
 print("\nDetecting and removing outliers...")
 from sklearn.ensemble import IsolationForest
-iso = IsolationForest(contamination=0.01, random_state=42)  # Remove top 0.1% outliers
+iso = IsolationForest(contamination=0.01, random_state=42)  # Remove top 1% outliers
 outlier_labels = iso.fit_predict(X_pca_cluster)
 mask = outlier_labels == 1  # Keep only inliers
 

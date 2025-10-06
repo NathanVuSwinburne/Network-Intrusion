@@ -131,7 +131,7 @@ print(f"Test set accuracy: {accuracy:.4f}")
 
 # Classification report with proper target names for binary classification
 target_names = ['BENIGN', 'ATTACK']  # Binary class names
-print("\nClassification Report:")
+print("\nClassification Report of Logistic Regression:")
 print(classification_report(y_test, y_pred, target_names=target_names))
 
 # 2.7 Plot confusion matrix (improved readability)

@@ -106,10 +106,6 @@ data['label'] = data['label'].apply(lambda x : 1 if x != 'BENIGN' else 0)
 label_encoder = LabelEncoder()
 label_encoder.fit([0, 1])
 
-# Display basic info about the cleaned data
-print('\nData types and non-null counts:')
-print(data.info())
-
 
 
 # Renaming the columns by removing leading/trailing whitespace
@@ -121,16 +117,31 @@ data.rename(columns = col_names, inplace = True)
 stats = data.describe().transpose()
 
 
-print("check on feature label")
-print(data['label'].unique())
+# print(data['label'].unique())
 
 # distribution of labels
 print(data['label'].value_counts())
 
+# Plot and save label distribution
+plt.figure(figsize=(10, 6))
+label_counts = data['label'].value_counts()
+ax = sns.barplot(x=label_counts.index, y=label_counts.values, palette='viridis')
+plt.xlabel('Label', fontsize=12, fontweight='bold')
+plt.ylabel('Count', fontsize=12, fontweight='bold')
+plt.title('Binary Label Distribution (0: Benign, 1: Attack)', fontsize=14, fontweight='bold')
+plt.xticks([0, 1], ['Benign (0)', 'Attack (1)'])
+# Add value labels on bars
+for i, v in enumerate(label_counts.values):
+    ax.text(i, v + max(label_counts.values) * 0.01, f'{v:,}', ha='center', va='bottom', fontweight='bold')
+plt.tight_layout()
+os.makedirs('data/processed_data_binary', exist_ok=True)
+plt.savefig('data/processed_data_binary/label_distribution_binary.png', dpi=300, bbox_inches='tight')
+print("Label distribution plot saved to: data/processed_data_binary/label_distribution_binary.png")
+plt.close()
+
 # ============================================================================
 # CATEGORICAL FEATURE ENCODING
 # ============================================================================
-
 print("\n" + "="*60)
 print("ENCODING CATEGORICAL FEATURES")
 print("="*60)
@@ -138,8 +149,8 @@ print("="*60)
 # --- Protocol Column Encoding ---
 print("\nEncoding protocol column...")
 if 'protocol' in data.columns:
-    print(f"Original protocol values: {sorted(data['protocol'].unique())}")
-    print(f"Protocol value counts:\n{data['protocol'].value_counts()}")
+    # print(f"Original protocol values: {sorted(data['protocol'].unique())}")
+    # print(f"Protocol value counts:\n{data['protocol'].value_counts()}")
     
     # Handle missing values in protocol
     if data['protocol'].isnull().sum() > 0:
@@ -156,7 +167,7 @@ if 'protocol' in data.columns:
     print("Protocol encoding mapping:")
     for i, label in enumerate(protocol_encoder.classes_):
         count = (data['protocol_encoded'] == i).sum()
-        print(f"  {i}: {label} ({count:,} samples)")
+        # print(f"  {i}: {label} ({count:,} samples)")
 else:
     print("Warning: 'protocol' column not found in dataset")
     protocol_encoder = None
@@ -164,8 +175,8 @@ else:
 # --- State Column Encoding ---
 print("\nEncoding state column...")
 if 'state' in data.columns:
-    print(f"Original state values: {sorted(data['state'].unique())}")
-    print(f"State value counts:\n{data['state'].value_counts()}")
+    # print(f"Original state values: {sorted(data['state'].unique())}")
+    # print(f"State value counts:\n{data['state'].value_counts()}")
     
     # Handle missing values in state
     if data['state'].isnull().sum() > 0:
@@ -182,7 +193,7 @@ if 'state' in data.columns:
     print("State encoding mapping:")
     for i, label in enumerate(state_encoder.classes_):
         count = (data['state_encoded'] == i).sum()
-        print(f"  {i}: {label} ({count:,} samples)")
+        # print(f"  {i}: {label} ({count:,} samples)")
 else:
     print("Warning: 'state' column not found in dataset")
     state_encoder = None
@@ -433,6 +444,7 @@ print(f"\nTest set remains untouched (real distribution): {y_test.value_counts()
 print("\nOptimizing memory usage...")
 X_train = X_train.astype(np.float32)
 X_test = X_test.astype(np.float32)
+X_train.info()
 
 # ==============================================
 # Scaling
