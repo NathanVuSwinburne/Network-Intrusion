@@ -75,7 +75,7 @@ class ComprehensiveNetworkEDA:
         
         if 'dataset_id' in self.df.columns:
             dataset_counts = self.df['dataset_id'].value_counts()
-            dataset_names = {0: 'CIC-IDS-2017', 1: 'UNSW-NB15'}
+            dataset_names = {1: 'CIC-IDS-2017', 0: 'UNSW-NB15'}
             dataset_counts.index = dataset_counts.index.map(dataset_names)
             bars = ax.bar(dataset_counts.index, dataset_counts.values, 
                          color=['#3498db', '#e74c3c'], edgecolor='black', linewidth=1.5)
