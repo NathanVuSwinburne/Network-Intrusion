@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-
+import os
 # -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
@@ -184,7 +184,14 @@ EXPORT_COLS = [
 
 # Save with index (reset index to create a clean 0-based index)
 cic_df_final = cic_df_clean[EXPORT_COLS].reset_index(drop=True)
-output_path = "data/merged_data/merged_cic_ids_2017.csv"
+# Define output directory and file path
+output_dir = "data/merged_data"
+output_path = os.path.join(output_dir, "merged_cic_ids_2017.csv")
+
+# Create the folder if it doesn't exist
+os.makedirs(output_dir, exist_ok=True)
+
+# Save the DataFrame
 cic_df_final.to_csv(output_path, index=False, header=True)
 
 print(f"\nDataset saved to: {output_path}")

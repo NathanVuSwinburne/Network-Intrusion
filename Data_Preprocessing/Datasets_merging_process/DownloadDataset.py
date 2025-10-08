@@ -55,12 +55,12 @@ def main():
     datasets = [
         {
             "name": "mrwellsdavid/unsw-nb15",
-            "path": "network-intrusion-dataset/UNSW_NB15",
+            "path": "data/network-intrusion-dataset/UNSW_NB15",
             "description": "UNSW-NB15 Dataset"
         },
         {
             "name": "chethuhn/network-intrusion-dataset", 
-            "path": "network-intrusion-dataset/CIC_IDS_2017",
+            "path": "data/network-intrusion-dataset/CIC_IDS_2017",
             "description": "CIC-IDS-2017 Dataset"
         }
     ]
