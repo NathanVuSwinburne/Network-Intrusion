@@ -33,28 +33,13 @@ data = data.drop_duplicates()
 dropped_rows = initial_rows - len(data)
 print(f"Dropped {dropped_rows} duplicate rows")
 
-# Replace infinite values with NaN
-print("Handling infinite values...")
-data = data.replace([np.inf, -np.inf], np.nan)
-
-print("Total missing value:")
-missing = data.isna().sum()
-print(missing.loc[missing > 0])
-
-print("Filling missing values with median...")
-for col in data.select_dtypes(include=[np.number]).columns:
-    if data[col].isnull().sum() > 0:
-        before = data[col].isnull().sum()
-        median_val = data[col].median()
-        data[col] = data[col].fillna(median_val)
-        print(f"Filled {before} missing values in {col} with median: {median_val:.2f}")
 
 rows, cols = data.shape
 print('\nFinal dataset after cleaning:')
 print(f"Number of rows: {rows:,}")
 print(f"Number of columns: {cols}")
 print(f"Number of duplicate rows removed: {dropped_rows:,}")
-print(f"Total missing values after cleaning: {data.isnull().sum().sum()}")
+
 
 # --- STEP 2: Feature engineering ---
 print(f"\nSTEP 2: Feature engineering...")

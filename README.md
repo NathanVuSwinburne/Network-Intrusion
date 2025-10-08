@@ -213,7 +213,7 @@ python EDA/Script/cic_ids_2017_eda_complete_output.py
 python EDA/Script/unsw_nb15_focused_analysis.py
 ```
 ```bash
-python EDA/Script/merged_dataset_eda_with_plots.py
+python EDA/Script/comprehensive_eda_individual_plots.py
 ```
 
 Generates comprehensive visualizations in `EDA/Outputs/`.
