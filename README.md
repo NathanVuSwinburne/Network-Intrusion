@@ -398,8 +398,5 @@ For questions, issues, or collaboration opportunities, please open an issue on G
 
 **Project Status**: Active Development
 
-<<<<<<< HEAD
-**Last Updated**: October 2025
+
 =======
-**Last Updated**: October 2025
->>>>>>> 5a7b90be5708b8b021b8501a6e63ea1e307ef930
