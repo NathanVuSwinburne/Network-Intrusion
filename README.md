@@ -189,14 +189,15 @@ python Data_Preprocessing/Datasets_merging_process/DownloadDataset.py
 
 This downloads UNSW-NB15 and CIC-IDS-2017 datasets from Kaggle.
 
-### 2. Process Individual Datasets
+### 2. Process Individual Datasets(CIC-IDS-2017 First)
 
 ```bash
+# Process CIC-IDS-2017
+python Data_Preprocessing/Datasets_merging_process/dataset_cic_ids.py
+
 # Process UNSW-NB15
 python Data_Preprocessing/Datasets_merging_process/dataset_unsw.py
 
-# Process CIC-IDS-2017
-python Data_Preprocessing/Datasets_merging_process/dataset_cic_ids.py
 ```
 
 ### 3. Merge Datasets
