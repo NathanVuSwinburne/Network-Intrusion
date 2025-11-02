@@ -2,6 +2,7 @@
 	import IconesCSVFile from '../../components/icons/IconesCSVFile.svelte';
 	import PieChart from "../../components/ui/PieChart.svelte";
 	import Histogram from "../../components/ui/Histogram.svelte";
+	import ScatterPlot from '../../components/ui/ScatterPlot.svelte';
 </script>
 
 <main class="container">
@@ -91,7 +92,7 @@
 		<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">
 			<h3 class="text-text-primary">Class Distribution</h3>
 
-
+			<ScatterPlot class="min-h-96" />
 		</div>
 	</section>
 </main>
