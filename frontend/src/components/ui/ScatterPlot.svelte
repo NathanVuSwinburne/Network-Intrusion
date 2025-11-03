@@ -43,7 +43,7 @@
 			},
 			tooltip: {
 				trigger: "item",
-				formatter: (params) => {
+				formatter: (params: any) => {
 					const [x, y] = params.value;
 					return `
 						<b>${params.seriesName}</b><br/>
