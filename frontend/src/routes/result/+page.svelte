@@ -90,16 +90,16 @@
 			<Histogram class="min-h-96" />
 		</div>
 
-		<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">
-			<h3 class="text-text-primary">Class Distribution</h3>
+<!--		<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">-->
+<!--			<h3 class="text-text-primary">Class Distribution</h3>-->
 
-			<ScatterPlot class="min-h-96" />
-		</div>
+<!--			<ScatterPlot class="min-h-96" />-->
+<!--		</div>-->
 
-		<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">
-			<h3 class="text-text-primary">Class Distribution</h3>
+<!--		<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">-->
+<!--			<h3 class="text-text-primary">Class Distribution</h3>-->
 
-			<BoxPlot class="min-h-96" />
-		</div>
+<!--			<BoxPlot class="min-h-96" />-->
+<!--		</div>-->
 	</section>
 </main>
