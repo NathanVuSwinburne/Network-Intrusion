@@ -37,7 +37,7 @@
 				text: "Packet Size vs Bytes/sec",
 				left: "center",
 				textStyle: {
-					color: "#aaa",
+					color: "#eee",
 					fontSize: 14,
 				},
 			},

@@ -69,7 +69,7 @@
 			title: {
 				text: `Distribution of ${selectedFeature} by Traffic Class`,
 				left: "center",
-				textStyle: { color: "#aaa", fontSize: 15 }
+				textStyle: { color: "#eee", fontSize: 15 }
 			},
 			tooltip: { trigger: "item" },
 			xAxis: {
@@ -94,7 +94,7 @@
 						color: (params: any) =>
 							params.dataIndex === 0 ? "#2196F3" : "#E53935" // blue/red
 					},
-					boxWidth: [20, 40]
+					boxWidth: [20, 60]
 				}
 			],
 			grid: { left: 60, right: 40, top: 60, bottom: 50 }
