@@ -65,14 +65,22 @@
 				nameGap: 30,
 				type: "value",
 				splitLine: { show: true },
-			},
+                nameTextStyle: {
+                    color: '#aaa',
+                    fontSize: 14,
+                }
+            },
 			yAxis: {
 				name: "bytes_per_sec",
 				nameLocation: "middle",
 				nameGap: 45,
 				type: "value",
 				splitLine: { show: true },
-			},
+                nameTextStyle: {
+                    color: '#aaa',
+                    fontSize: 14,
+                }
+            },
 			series: [
 				{
 					name: "Normal",

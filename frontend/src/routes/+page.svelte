@@ -1,13 +1,12 @@
 <script>
-	import DottedArrowDown from '../components/icons/DottedArrowDown.svelte';
 	import FeatureCard from "../components/ui/FeatureCard.svelte";
 	import {Button} from "bits-ui";
 
 	const HEADING = "Network Anomaly Detection"
 </script>
 
-<main class="container pt-8">
-	<div class="flex h-[90vh] flex-col items-center justify-center">
+<main class="container">
+	<section class="my-32 flex flex-col items-center justify-center">
 		<h1 class="text-4xl flex font-semibold text-text-primary">
 			{#each HEADING as letter}
 				{#if letter === ' '}
@@ -29,7 +28,8 @@
 <!--			<p class="text-sm font-medium text-text-secondary">Scroll to view more</p>-->
 <!--			<DottedArrowDown class="mt-2 h-[2rem] w-[2rem] animate-bounce text-text-secondary" />-->
 <!--		</div>-->
-	</div>
+	</section>
+
 	<section id="features" class="flex flex-col items-center space-y-4 mb-56">
 		<h2 class="text-3xl font-semibold text-text-primary">Features</h2>
 		<div class="grid grid-cols-3 gap-5">

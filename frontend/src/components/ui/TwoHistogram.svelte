@@ -80,12 +80,10 @@
           top: 10,
           textStyle: { color: '#eee', fontSize: 16, fontWeight: 'bold' }
         },
-        // sub-titles above each small chart
-        { text: 'Normal Class', left: '25%', top: 50, textStyle: { color: '#ddd', fontSize: 14 } },
-        { text: 'Anomaly Class', left: '75%', top: 50, textStyle: { color: '#ddd', fontSize: 14 } }
+        { text: 'Normal Class', left: '20%', top: 50, textStyle: { color: '#ddd', fontSize: 14 } },
+        { text: 'Anomaly Class', left: '72%', top: 50, textStyle: { color: '#ddd', fontSize: 14 } }
       ],
       tooltip: { trigger: 'axis' },
-      // two grids side-by-side
       grid: [
         { left: 50, right: '55%', top: 80, bottom: 60 },
         { left: '55%', right: 50, top: 80, bottom: 60 }
@@ -98,7 +96,12 @@
           name: selectedFeature,
           nameLocation: 'middle',
           nameGap: 30,
-          axisLabel: { color: '#ccc', interval: 0, rotate: 0 }
+          axisLabel: { color: '#ccc', interval: 0, rotate: 0 },
+          nameTextStyle: {
+            color: '#aaa',
+            fontSize: 14,
+          }
+
         },
         {
           type: 'category',
@@ -107,7 +110,12 @@
           name: selectedFeature,
           nameLocation: 'middle',
           nameGap: 30,
-          axisLabel: { color: '#ccc', interval: 0, rotate: 0 }
+          axisLabel: { color: '#ccc', interval: 0, rotate: 0 },
+          nameTextStyle: {
+            color: '#aaa',
+            fontSize: 14,
+          }
+
         }
       ],
       yAxis: [
@@ -118,7 +126,12 @@
           nameLocation: 'middle',
           nameGap: 40,
           axisLabel: { color: '#ccc' },
-          splitLine: { show: true }
+          splitLine: { show: true },
+
+          nameTextStyle: {
+            color: '#aaa',
+            fontSize: 14,
+          }
         },
         {
           type: 'value',
@@ -127,7 +140,12 @@
           nameLocation: 'middle',
           nameGap: 40,
           axisLabel: { color: '#ccc' },
-          splitLine: { show: true }
+          splitLine: { show: true },
+
+          nameTextStyle: {
+            color: '#aaa',
+            fontSize: 14,
+          }
         }
       ],
       // keep per-series color stable
@@ -184,11 +202,6 @@
     };
   });
 
-  // Re-render when feature changes (Svelte 5 runes)
-  $effect(() => {
-    void selectedFeature; // track dependency
-    renderChart();
-  });
 </script>
 
 <!-- Controls -->

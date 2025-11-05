@@ -8,8 +8,8 @@
 
 	const ROUTES: { id: string; name: string }[] = [
 		{ id: '/', name: 'Home' },
-		{ id: '/about', name: 'About' },
-		{ id: '/upload', name: 'Upload'}
+		{ id: '/dataset', name: 'Dataset' },
+		{ id: '/modeltest', name: 'Test the Model'}
 	];
 </script>
 
@@ -25,7 +25,7 @@
 <!--	</div>-->
 <!--</section>-->
 
-<section class="fixed top-[2%] left-[50%] container mt-2 translate-[-50%]">
+<section class="fixed top-[2%] left-[50%] container mt-2 translate-[-50%] z-20">
 	<nav
 		class="flex justify-between rounded-full border border-dashed border-border-primary bg-primary px-4 py-2"
 	>

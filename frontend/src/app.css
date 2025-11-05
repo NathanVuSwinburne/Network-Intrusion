@@ -12,14 +12,14 @@
 
 
 :root {
-    --bg-color: #171717;
-    --bg-grid-color: #202020;
+    --bg-color: #0a0a0a;
+    --bg-grid-color: #101010;
 }
 
 @theme {
-    --color-primary: #171717;
+    --color-primary: #0f0f0f;
     --color-text-primary: #e7e7e7;
-    --color-text-secondary: #9a9a9a;
+    --color-text-secondary: #aaaaaa;
     --color-border-primary: #404040;
 }
 

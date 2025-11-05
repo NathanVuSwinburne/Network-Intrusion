@@ -49,14 +49,23 @@
           return `<b>${p.name}</b><br/>min: ${min}<br/>Q1: ${q1}<br/>median: ${med}<br/>Q3: ${q3}<br/>max: ${max}`;
         }
       },
-      xAxis: { type: 'category', data: ['Normal', 'Anomaly'], axisLabel: { color: '#ccc' } },
+      xAxis: { type: 'category', data: ['Normal', 'Anomaly'], axisLabel: { color: '#ccc' },
+        nameTextStyle: {
+          color: '#aaa',
+          fontSize: 14,
+        }
+      },
       yAxis: {
         type: 'value',
         name: 'Scaled Value',
         nameLocation: 'middle',
         nameGap: 35,
         axisLabel: { color: '#ccc' },
-        splitLine: { show: true }
+        splitLine: { show: true },
+        nameTextStyle: {
+          color: '#aaa',
+          fontSize: 14,
+        }
       },
       colorBy: 'series',                 // don't let palette override per-item color
       series: [
