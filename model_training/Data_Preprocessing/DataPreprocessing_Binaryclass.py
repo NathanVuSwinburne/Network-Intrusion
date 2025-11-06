@@ -24,7 +24,7 @@ from datetime import datetime
 # ============================================================================
 
 # 1.1 Loading the dataset
-data = pd.read_csv('data/merged_data/merged_datasets.csv')
+data = pd.read_csv('model_training/data/merged_data/merged_datasets.csv')
 
 # Drop duplicate rows
 print("Dropping duplicate rows...")
@@ -119,9 +119,9 @@ plt.xticks([0, 1], ['Benign (0)', 'Attack (1)'])
 for i, v in enumerate(label_counts.values):
     ax.text(i, v + max(label_counts.values) * 0.01, f'{v:,}', ha='center', va='bottom', fontweight='bold')
 plt.tight_layout()
-os.makedirs('data/processed_data_binary', exist_ok=True)
-plt.savefig('data/processed_data_binary/label_distribution_binary.png', dpi=300, bbox_inches='tight')
-print("Label distribution plot saved to: data/processed_data_binary/label_distribution_binary.png")
+os.makedirs('model_training/data/processed_data_binary', exist_ok=True)
+plt.savefig('model_training/data/processed_data_binary/label_distribution_binary.png', dpi=300, bbox_inches='tight')
+print("Label distribution plot saved to: model_training/data/processed_data_binary/label_distribution_binary.png")
 plt.close()
 
 # ============================================================================
@@ -446,40 +446,50 @@ X_test_scaled = pd.DataFrame(X_test_scaled, columns=selected_features, index=X_t
 
 # Save processed data
 print("\nSaving processed data...")
-os.makedirs('data/processed_data_binary', exist_ok=True)
+os.makedirs('model_training/data/processed_data_binary', exist_ok=True)
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Save training data
 train_data = pd.concat([X_train_scaled, y_train], axis=1)
-train_file = f'data/processed_data_binary/X_train_scaled_binary_class_{timestamp}.csv'
+train_file = f'model_training/data/processed_data_binary/X_train_scaled_binary_class_{timestamp}.csv'
 train_data.to_csv(train_file, index=False)
 
 # Save test data
 test_data = pd.concat([X_test_scaled, y_test], axis=1)
-test_file = f'data/processed_data_binary/X_test_scaled_binary_class_{timestamp}.csv'
+test_file = f'model_training/data/processed_data_binary/X_test_scaled_binary_class_{timestamp}.csv'
 test_data.to_csv(test_file, index=False)
 
 
 
 # Save label encoder
-label_encoder_file = f'data/processed_data_binary/label_encoder_binary_class_{timestamp}.pkl'
+label_encoder_file = f'model_training/data/processed_data_binary/label_encoder_binary_class_{timestamp}.pkl'
 with open(label_encoder_file, 'wb') as f:
     pickle.dump(label_encoder, f, pickle.HIGHEST_PROTOCOL)
 
 if 'protocol_encoder' in locals() and protocol_encoder is not None:
-    protocol_encoder_file = f'data/processed_data_binary/protocol_encoder_binary_class_{timestamp}.pkl'
+    protocol_encoder_file = f'model_training/data/processed_data_binary/protocol_encoder_binary_class_{timestamp}.pkl'
     with open(protocol_encoder_file, 'wb') as f:
         pickle.dump(protocol_encoder, f, pickle.HIGHEST_PROTOCOL)
     print(f"Protocol encoder saved to: {os.path.abspath(protocol_encoder_file)}")
 
 if 'state_encoder' in locals() and state_encoder is not None:
-    state_encoder_file = f'data/processed_data_binary/state_encoder_binary_class_{timestamp}.pkl'
+    state_encoder_file = f'model_training/data/processed_data_binary/state_encoder_binary_class_{timestamp}.pkl'
     with open(state_encoder_file, 'wb') as f:
         pickle.dump(state_encoder, f, pickle.HIGHEST_PROTOCOL)
     print(f"State encoder saved to: {os.path.abspath(state_encoder_file)}")
 
+
+# Save scaler to model_training\data\processed_data_binary
+scaler_dir = os.path.join('model_training', 'data', 'processed_data_binary')
+os.makedirs(scaler_dir, exist_ok=True)
+scaler_file = os.path.join(scaler_dir, f'scaler_standard_binary_{timestamp}.pkl')
+with open(scaler_file, 'wb') as f:
+    pickle.dump(scaler, f, pickle.HIGHEST_PROTOCOL)
+print(f"Scaler saved to: {os.path.abspath(scaler_file)}")
+
+
 # Save feature selection details
-feature_selection_file = f'data/processed_data_binary/feature_selection_report_binary_class_{timestamp}.txt'
+feature_selection_file = f'model_training/data/processed_data_binary/feature_selection_report_binary_class_{timestamp}.txt'
 with open(feature_selection_file, 'w') as f:
     f.write("HYBRID FEATURE SELECTION REPORT\n")
     f.write("="*50 + "\n\n")
@@ -497,7 +507,7 @@ with open(feature_selection_file, 'w') as f:
         f.write(f"{info['feature']:<25} | Corr: {info['correlation']:.3f} | RF: {info['rf_importance']:.4f} | MI: {info['mutual_info']:.4f} | Methods: {info['methods']}\n")
 
 # Save feature names
-feature_file = f'data/processed_data_binary/selected_features_hybrid_{timestamp}.txt'
+feature_file = f'model_training/data/processed_data_binary/selected_features_hybrid_{timestamp}.txt'
 with open(feature_file, 'w') as f:
     for feature in selected_features:
         f.write(f"{feature}\n")
