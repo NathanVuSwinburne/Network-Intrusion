@@ -69,16 +69,36 @@
       },
       colorBy: 'series',                 // don't let palette override per-item color
       series: [
-        {
-          name: 'Traffic Class',
-          type: 'boxplot',
-          boxWidth: [20, 60],
-          data: [
-            { name: 'Normal',  value: normalBox,  itemStyle: { color: '#2196F3', borderColor: '#2196F3' } },
-            { name: 'Anomaly', value: anomalyBox, itemStyle: { color: '#E53935', borderColor: '#E53935' } }
-          ]
-        }
-      ],
+      {
+        name: 'Traffic Class',
+        type: 'boxplot',
+        boxWidth: [20, 60],
+        // keep palette from overriding per-item color
+        colorBy: 'series',
+        data: [
+          {
+            name: 'Normal',
+            value: normalBox,
+            itemStyle: {
+              color: 'rgba(33,150,243,0.35)',   // blue fill, slightly transparent
+              borderColor: '#2196F3',           // blue border = whiskers color
+              borderWidth: 2                    // <-- makes whisker/min/max lines always visible
+            },
+            emphasis: { disabled: true }
+          },
+          {
+            name: 'Anomaly',
+            value: anomalyBox,
+            itemStyle: {
+              color: 'rgba(229,57,53,0.35)',    // red fill, slightly transparent
+              borderColor: '#E53935',           // red border = whiskers color
+              borderWidth: 2
+            },
+            emphasis: { disabled: true }
+          }
+        ]
+      }
+    ],
       grid: { left: 60, right: 40, top: 60, bottom: 50 }
     };
   }
