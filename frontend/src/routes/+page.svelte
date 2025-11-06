@@ -20,8 +20,8 @@
 			Upload your network traffic logs and instantly detect unusual behavior, suspicious activity, potential cyber threats and view insights.
 		</p>
 		<div class="mt-6 flex justify-center items-center gap-6">
-			<Button.Root class="rounded bg-text-primary px-4 py-2 font-semibold text-primary active:transition-all active:scale-[0.98]" href="upload">Upload CSV To Analyze</Button.Root>
-			<Button.Root class="rounded border-dashed px-4 py-2 text-text-primary border border-border-primary active:transition-all active:scale-[0.98]" href="#how-it-works">How It Works</Button.Root>
+			<Button.Root class="rounded bg-text-primary px-4 py-2 font-semibold text-primary active:transition-all active:scale-[0.98]" href="modeltest">Get Started</Button.Root>
+<!--			<Button.Root class="rounded border-dashed px-4 py-2 text-text-primary border border-border-primary active:transition-all active:scale-[0.98]" href="#how-it-works">How It Works</Button.Root>-->
 		</div>
 
 <!--		<div class="absolute bottom-44 flex flex-col items-center">-->
@@ -33,18 +33,18 @@
 	<section id="features" class="flex flex-col items-center space-y-4 mb-56">
 		<h2 class="text-3xl font-semibold text-text-primary">Features</h2>
 		<div class="grid grid-cols-3 gap-5">
-			<FeatureCard title="Feature 1" desc="Anomaly detection for cybersecurity & network monitoring" />
-			<FeatureCard title="Feature 2" desc="Supports CSV network traffic exports" />
-			<FeatureCard title="Feature 3" desc="Visual breakdowns & summary statistics" />
+			<FeatureCard title="Real Time Detection" desc="Continuously analyzes network traffic to provide real time detection" />
+			<FeatureCard title="Machine Learning-Based Detection" desc="Classifies network activity as benign or malicious" />
+			<FeatureCard title="Automated Alerting System" desc="Generates instant alerts for suspicious behavior" />
 		</div>
 	</section>
 
 	<section id="how-it-works" class="flex flex-col items-center space-y-4 mb-56">
 		<h2 class="text-3xl font-semibold text-text-primary">How It Works</h2>
 		<div class="grid grid-cols-3 gap-5">
-			<FeatureCard title="1. Upload Network Data" desc="Upload a CSV of traffic data that follows __this__ format" />
-			<FeatureCard title="2. AI Detection Engine" desc="Our model analyzes network activity patterns and flags anomalies in real-time." />
-			<FeatureCard title="3. Clear Output Insights" desc="Receive structured results, including anomaly scores, flagged records, and detection insights." />
+			<FeatureCard title="1. Upload a text packet" desc="Provide some network data for the model to classify" />
+			<FeatureCard title="2. AI Detection Engine" desc="Our model analyzes network patterns and flags anomalies in real-time" />
+			<FeatureCard title="3. Clear Output Insights" desc="Receive structured results and detection insights" />
 		</div>
 	</section>
 

@@ -29,7 +29,7 @@
 	<nav
 		class="flex justify-between rounded-full border border-dashed border-border-primary bg-primary px-4 py-2"
 	>
-		<h1 class="font-medium text-white">Network Anomaly Detector</h1>
+		<a class="font-medium text-white" href="/">Network Anomaly Detector</a>
 		<div class="flex space-x-5">
 			{#each ROUTES as route}
 				<a
