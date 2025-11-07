@@ -10,18 +10,19 @@
 	let loading = $state(false)
 	let errors: { [key: string]: string } = $state({})
 
-	const ORDER = ['source_bytes', 'dest_bytes', 'source_pkts', 'dest_pkts', 'tcp_win_fwd', 'tcp_win_bwd', 'seg_size_fwd', 'seg_size_bwd', 'duration', 'protocol', 'state']
+	const ORDER = ['source_bytes', 'dest_bytes', 'source_pkts', 'dest_pkts', 'tcp_win_fwd', 'tcp_win_bwd', 'mean_seg_size_fwd', 'mean_seg_size_bwd', 'duration', 'protocol', 'state']
 	const formSubmit = async (event: SubmitEvent) => {
 		event.preventDefault()
 		const data = new FormData(event.target)
 		const input = Object.fromEntries(data.entries())
+		let payload: { [key: string]: any } = {}
 
 		// let csvStr = ''
 
 		// Format input separated by commas
 		for (let i = 0; i < ORDER.length; i++) {
 			const inputKey = ORDER[i]
-			const value = input[inputKey]
+			const value = input[inputKey] as string
 
 			// Validate each value
 			if (value === "") {
@@ -30,12 +31,18 @@
 				delete errors[inputKey]
 			}
 
+			if (!isNaN(parseFloat(value))) {
+				payload[inputKey] = parseFloat(value)
+			} else {
+				payload[inputKey] = value
+			}
+
 			// if (i < ORDER.length -1) {
 			// 	csvStr += value + ","
 			// } else csvStr += value
 		}
 
-		console.log(input)
+		console.log(payload)
 
 		const hasErrors = Object.keys(errors).length > 0
 		if (hasErrors) {
@@ -46,12 +53,16 @@
 		loading = true
 
 		// Get response from backend
-		const response = await fetch('http://127.0.0.1:8000/predict', {
+		const response = await fetch('http://127.0.0.1:8000/predict/', {
 			method: 'POST',
-			body: JSON.stringify(input)
+			headers: {
+				accept: 'application/json',
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(payload)
 		});
 
-		console.log(response)
+		console.log(await response.json())
 	}
 
 
@@ -75,8 +86,8 @@
 
 				<TextInput name="TCP Win Forward" id="tcp_win_fwd" errors={errors} />
 				<TextInput name="TCP Win Backward" id="tcp_win_bwd" errors={errors} />
-				<TextInput name="Mean Seg Size Forward" id="seg_size_fwd" errors={errors} />
-				<TextInput name="Mean Seg Size Backward" id="seg_size_bwd" errors={errors} />
+				<TextInput name="Mean Seg Size Forward" id="mean_seg_size_fwd" errors={errors} />
+				<TextInput name="Mean Seg Size Backward" id="mean_seg_size_bwd" errors={errors} />
 
 				<TextInput name="Duration" id="duration" errors={errors} />
 				<DropdownInput name="Protocol Encoded" id="protocol" options={["TCP", "UDP", "ARP", "OSPF", "ICMP"]} errors={errors} />
