@@ -34,14 +34,14 @@ class NetworkInput(BaseModel):
     protocol: str
     state: str
 
-@app.post("/predict")
+@app.post("/predict/")
 async def predict(input_data: NetworkInput):
     try:
         # Convert to DataFrame
-        df = pd.DataFrame([input_data.dict()])
+        data_dict = input_data.dict()
 
         # Preprocess using same training pipeline
-        X_processed = preprocess_input(df)
+        X_processed = preprocess_input(data_dict)
 
         # Predict with trained model
         y_pred = model.predict(X_processed)
