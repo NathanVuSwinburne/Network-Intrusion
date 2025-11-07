@@ -64,6 +64,7 @@
 		});
 
 		const responseData = await response.json()
+		console.log(responseData)
 		if (responseData.error) {
 			majorError = responseData.error
 		}
