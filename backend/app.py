@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
-from model.preprocess import preprocess_input 
+from .model.preprocess import preprocess_input 
 import pandas as pd
 
 app = FastAPI()
@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # Load model once
-with open("model/trained_model.pkl", "rb") as f:
+with open("backend/model/trained_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Pydantic schema for validation

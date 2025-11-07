@@ -3,16 +3,16 @@ import pandas as pd
 import pickle
 
 # Load all artifacts at startup
-with open("model/scaler.pkl", "rb") as f:
+with open("backend/model/scaler.pkl", "rb") as f:
     scaler = pickle.load(f)
-with open("model/label_encoder.pkl", "rb") as f:
+with open("backend/model/label_encoder.pkl", "rb") as f:
     label_encoder = pickle.load(f)
-with open("model/protocol_encoder.pkl", "rb") as f:
+with open("backend/model/protocol_encoder.pkl", "rb") as f:
     protocol_encoder = pickle.load(f)
-with open("model/state_encoder.pkl", "rb") as f:
+with open("backend/model/state_encoder.pkl", "rb") as f:
     state_encoder = pickle.load(f)
 
-selected_features = [line.strip() for line in open("model/selected_features.txt")]
+selected_features = [line.strip() for line in open("backend/model/selected_features.txt")]
 
 def preprocess_input(user_input: dict) -> np.ndarray:
     """Convert user JSON input into the same processed format used in training."""
