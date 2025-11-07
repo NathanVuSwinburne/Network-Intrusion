@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
 from .model.preprocess import preprocess_input 
 import pandas as pd
-
+import traceback
 app = FastAPI()
 
 # Allow frontend connection
@@ -53,7 +53,8 @@ async def predict(input_data: NetworkInput):
         return {"prediction": prediction, "label": label}
 
     except Exception as e:
-        return {"error": str(e)}
+        print("Error details:", traceback.format_exc())  # Detailed error log
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
