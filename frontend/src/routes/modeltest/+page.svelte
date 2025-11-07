@@ -4,6 +4,10 @@
 	import TextInput from "../../components/ui/TextInput.svelte";
 	import {Button} from "bits-ui";
 	import PieChart from "../../components/ui/PieChart.svelte";
+	import {error} from "@sveltejs/kit";
+
+	let loading = $state(false)
+	let errors: { [key: string]: string } = $state({})
 
 	const ORDER = ['src_bytes', 'dest_bytes', 'src_pkts', 'dest_pkts', 'tcp_win_fwd', 'tcp_win_bwd', 'seg_size_fwd', 'seg_size_bwd', 'dur', 'proto_enc', 'state_enc']
 	const formSubmit = async (event: SubmitEvent) => {
@@ -16,11 +20,27 @@
 		// Format input separated by commas
 		for (let i = 0; i < ORDER.length; i++) {
 			const inputKey = ORDER[i]
+			const value = input[inputKey]
+
+			// Validate each value
+			if (value === "") {
+				errors[inputKey] = "Please fill out this value."
+			} else {
+				delete errors[inputKey]
+			}
+
 			if (i < ORDER.length -1) {
-				csvStr += input[inputKey] + ","
-			} else csvStr += input[inputKey]
+				csvStr += value + ","
+			} else csvStr += value
 		}
 
+		const hasErrors = Object.keys(errors).length > 0
+		if (hasErrors) {
+			console.log('Failed because of errors')
+			return
+		} else console.log('Passing request')
+
+		loading = true
 
 		// Get response from backend
 		const response = await fetch('http://127.0.0.1:8000/predict', {
@@ -45,22 +65,22 @@
 		<form on:submit={formSubmit} class="min-h-[20rem] min-w-[40rem] items-center justify-center rounded-2xl border-2 border-dashed border-border-primary bg-primary p-8 shadow-2xl shadow-[#202020] flex flex-col">
 			<h1 class="text-xl font-semibold text-text-primary">Manual Input</h1>
 			<div class="grid grid-cols-4 gap-3 my-4">
-				<TextInput name="Source Bytes" id="src_bytes" />
-				<TextInput name="Destination Bytes" id="dest_bytes" />
-				<TextInput name="Source Packets" id="src_pkts" />
-				<TextInput name="Destination Packets" id="dest_pkts" />
+				<TextInput name="Source Bytes" id="src_bytes" errors={errors} />
+				<TextInput name="Destination Bytes" id="dest_bytes" errors={errors} />
+				<TextInput name="Source Packets" id="src_pkts" errors={errors} />
+				<TextInput name="Destination Packets" id="dest_pkts" errors={errors} />
 
-				<TextInput name="TCP Win Forward" id="tcp_win_fwd" />
-				<TextInput name="TCP Win Backward" id="tcp_win_bwd" />
-				<TextInput name="Mean Seg Size Forward" id="seg_size_fwd" />
-				<TextInput name="Mean Seg Size Backward" id="seg_size_bwd" />
+				<TextInput name="TCP Win Forward" id="tcp_win_fwd" errors={errors} />
+				<TextInput name="TCP Win Backward" id="tcp_win_bwd" errors={errors} />
+				<TextInput name="Mean Seg Size Forward" id="seg_size_fwd" errors={errors} />
+				<TextInput name="Mean Seg Size Backward" id="seg_size_bwd" errors={errors} />
 
-				<TextInput name="Duration" id="dur" />
-				<TextInput name="Protocol Encoded" id="proto_enc" />
-				<TextInput name="State Encoded" id="state_enc" />
+				<TextInput name="Duration" id="dur" errors={errors} />
+				<TextInput name="Protocol Encoded" id="proto_enc" errors={errors} />
+				<TextInput name="State Encoded" id="state_enc" errors={errors} />
 			</div>
 
-			<Button.Root class="rounded mt-12 bg-text-primary px-4 py-2 font-semibold text-primary active:transition-all active:scale-[0.98]" type="submit">Submit</Button.Root>
+			<Button.Root class={`rounded mt-12 px-4 py-2 font-semibold text-primary active:transition-all ${loading ? 'bg-text-secondary' : 'bg-text-primary active:scale-[0.98]'}`} type="submit" disabled={loading}>{loading ? 'Loading...' : 'Submit'}</Button.Root>
 
 	<!--		Center text-->
 	<!--		<div class="relative flex h-max w-max flex-col items-center justify-center space-y-3 pb-8 text-text-primary bg-red-400">-->
