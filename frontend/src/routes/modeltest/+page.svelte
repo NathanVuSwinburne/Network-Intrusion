@@ -9,6 +9,7 @@
 
 	let loading = $state(false)
 	let errors: { [key: string]: string } = $state({})
+	let majorError = $state("")
 
 	const ORDER = ['source_bytes', 'dest_bytes', 'source_pkts', 'dest_pkts', 'tcp_win_fwd', 'tcp_win_bwd', 'mean_seg_size_fwd', 'mean_seg_size_bwd', 'duration', 'protocol', 'state']
 	const formSubmit = async (event: SubmitEvent) => {
@@ -62,7 +63,10 @@
 			body: JSON.stringify(payload)
 		});
 
-		console.log(await response.json())
+		const responseData = await response.json()
+		if (responseData.error) {
+			majorError = responseData.error
+		}
 	}
 
 
@@ -74,9 +78,15 @@
 		<h2 class="text-text-secondary">Provide a sample piece of data and get a response on the status of the network activity</h2>
 	</section>
 
-	<section class="flex flex-col space-y-26 items-center justify-center my-32">
+	<section class="flex flex-col items-center justify-center my-32">
+		{#if majorError !== ""}
+			<div class=" bg-red-200 w-[40rem] px-4 py-2 rounded border-red-500 border mb-8">
+				<h3 class="text-red-800 font-semibold">An error occured:</h3>
+				<p class="text-red-600 text-sm">{majorError}</p>
+			</div>
+		{/if}
 
-		<form on:submit={formSubmit} class="min-h-[20rem] min-w-[40rem] items-center justify-center rounded-2xl border-2 border-dashed border-border-primary bg-primary p-8 shadow-2xl shadow-[#202020] flex flex-col">
+		<form on:submit={formSubmit} class="mb-26 min-h-[20rem] min-w-[40rem] items-center justify-center rounded-2xl border-2 border-dashed border-border-primary bg-primary p-8 shadow-2xl shadow-[#202020] flex flex-col">
 			<h1 class="text-xl font-semibold text-text-primary">Manual Input</h1>
 			<div class="grid grid-cols-4 gap-3 my-4">
 				<TextInput name="Source Bytes" id="source_bytes" errors={errors} />
