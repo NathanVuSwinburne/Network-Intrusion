@@ -13,7 +13,7 @@
 
     <select id={id} name={id} class={`text-text-primary rounded border py-1 px-2 ${error ? 'border-red-800' : 'border-border-primary'}`}>
         {#each options as option}
-            <option value={option} class="text-black">{option}</option>
+            <option value={option} class="text-black">{option.toUpperCase()}</option>
         {/each}
     </select>
 </div>
