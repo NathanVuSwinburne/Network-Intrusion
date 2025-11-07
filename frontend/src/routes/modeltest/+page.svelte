@@ -101,7 +101,7 @@
 
 				<TextInput name="Duration" id="duration" errors={errors} />
 				<DropdownInput name="Protocol Encoded" id="protocol" options={["tcp", "udp", "arp", "ospf", "icmp"]} errors={errors} />
-				<DropdownInput name="State Encoded" id="state" options={["txd", "fin", "con", "req", "int"]} errors={errors} />
+				<DropdownInput name="State Encoded" id="state" options={["TXD", "FIN", "CON", "REQ", "INT"]} errors={errors} />
 			</div>
 
 			<Button.Root class={`rounded mt-12 px-4 py-2 font-semibold text-primary active:transition-all ${loading ? 'bg-text-secondary' : 'bg-text-primary active:scale-[0.98]'}`} type="submit" disabled={loading}>{loading ? 'Loading...' : 'Submit'}</Button.Root>
