@@ -3,7 +3,7 @@
     import createRandomString from "$lib/createRandomString";
     import theme from "../../lib/assets/chart-theme.json"
 
-    let { ...others } = $props();
+    let { data, ...others } = $props();
 
     const chartId = 'pieChart' + createRandomString(4)
 
@@ -27,7 +27,7 @@
             },
             series: [
                 {
-                    name: 'Access From',
+                    name: 'Status Type',
                     type: 'pie',
                     radius: ['40%', '70%'],
                     avoidLabelOverlap: false,
@@ -50,17 +50,18 @@
                     labelLine: {
                         show: false
                     },
-                    data: [
-                        { value: 1048, name: 'Search Engine' },
-                        { value: 735, name: 'Direct' },
-                        { value: 580, name: 'Email' },
-                        { value: 484, name: 'Union Ads' },
-                        { value: 300, name: 'Video Ads' }
-                    ]
+                    data: data
                 }
+
             ],
 
         }
+
+
+        // [
+        // { value: 1048, name: 'Search Engine' },
+        //     { value: 735, name: 'Direct' },
+        // ]                }
         chart.setOption(options);
 
         let resizeChart = () => {

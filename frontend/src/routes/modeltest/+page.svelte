@@ -10,6 +10,9 @@
 	let loading = $state(false)
 	let errors: { [key: string]: string } = $state({})
 	let majorError = $state("")
+	let showChart = $state(false)
+	let chartData: { value: number, name: string}[] = $state([])
+	let predictedResult = $state('')
 
 	const ORDER = ['source_bytes', 'dest_bytes', 'source_pkts', 'dest_pkts', 'tcp_win_fwd', 'tcp_win_bwd', 'mean_seg_size_fwd', 'mean_seg_size_bwd', 'duration', 'protocol', 'state']
 	const formSubmit = async (event: SubmitEvent) => {
@@ -64,10 +67,19 @@
 		});
 
 		const responseData = await response.json()
-		console.log(responseData)
 		if (responseData.error) {
 			majorError = responseData.error
+			showChart = false
+		} else {
+			chartData = [
+				{ value: Math.floor(responseData.predicted_prob_attack*100), name: 'Abnormal' },
+				{ value: Math.floor(responseData.predicted_prob_benign*100), name: 'Benign'},
+			]
+			predictedResult = responseData.predicted_class
+			showChart = true
 		}
+
+		loading = false
 	}
 
 
@@ -119,11 +131,15 @@
 
 
 
-		<div class="min-h-[20rem] min-w-[40rem] items-center justify-center rounded-2xl border-2 border-dashed border-border-primary bg-primary p-8 shadow-2xl shadow-[#202020] flex flex-col">
-			<h1 class="text-xl font-semibold text-text-primary">Results Output</h1>
+		{#if showChart}
+			<div class="min-h-[20rem] min-w-[40rem] items-center justify-center rounded-2xl border-2 border-dashed border-border-primary bg-primary p-8 shadow-2xl shadow-[#202020] flex flex-col">
+				<h1 class="text-xl font-semibold text-text-primary">Results Output</h1>
+				<h1 class="font-semibold text-text-primary">Predicted: {predictedResult}</h1>
 
-			<PieChart class="min-h-96 w-full" />
-		</div>
+
+				<PieChart class="min-h-96 w-full" data={chartData} />
+			</div>
+		{/if}
 	</section>
 
 <!--	<section id="dataset-features" class="container flex items-center">-->
