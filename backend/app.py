@@ -34,7 +34,7 @@ class NetworkInput(BaseModel):
     protocol: str
     state: str
 
-@app.post("/predict/")
+@app.post("/predict")
 async def predict(input_data: NetworkInput):
     try:
         # Convert to DataFrame
