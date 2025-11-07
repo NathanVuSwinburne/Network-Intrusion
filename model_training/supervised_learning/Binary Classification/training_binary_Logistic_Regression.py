@@ -15,11 +15,11 @@ os.makedirs('results_binary/LogisticRegression', exist_ok=True)
 
 # 2.2 Load the latest processed data
 print("Loading processed data...")
-train_files = glob.glob('data/processed_data_binary/X_train_scaled_binary_class_*.csv')
-test_files = glob.glob('data/processed_data_binary/X_test_scaled_binary_class_*.csv')
-le_files = glob.glob('data/processed_data_binary/label_encoder_binary_class_*.pkl')
-protocol_encoder_files = glob.glob('data/processed_data_binary/protocol_encoder_binary_class_*.pkl')
-state_encoder_files = glob.glob('data/processed_data_binary/state_encoder_binary_class_*.pkl')
+train_files = glob.glob('model_training/data/processed_data_binary/X_train_scaled_binary_class_*.csv')
+test_files = glob.glob('model_training/data/processed_data_binary/X_test_scaled_binary_class_*.csv')
+le_files = glob.glob('model_training/data/processed_data_binary/label_encoder_binary_class_*.pkl')
+protocol_encoder_files = glob.glob('model_training/data/processed_data_binary/protocol_encoder_binary_class_*.pkl')
+state_encoder_files = glob.glob('model_training/data/processed_data_binary/state_encoder_binary_class_*.pkl')
 
 if not train_files or not test_files or not le_files:
     print("Error: Processed data files not found. Please run DataPreprocessing.py first.")
@@ -106,7 +106,7 @@ print("Making predictions...")
 y_pred = LR_classifier.predict(X_test)
 
 # Save the trained model and all encoders
-model_file = f'models_checkpoint/binary/LogisticRegression_trained_model_{timestamp}.pkl'
+model_file = f'model_training/models_checkpoint/binary/LogisticRegression_trained_model_{timestamp}.pkl'
 with open(model_file, 'wb') as f:
     pickle.dump({
         'model': LR_classifier,
@@ -158,7 +158,7 @@ for text in disp.text_.ravel():
     text.set_fontsize(8)
 
 plt.tight_layout()
-plt.savefig("results_binary/LogisticRegression/Logistic_Regression_confusion_matrix.png", dpi=300)  # higher DPI for sharper text
+plt.savefig("model_training/results_binary/LogisticRegression/Logistic_Regression_confusion_matrix.png", dpi=300)  # higher DPI for sharper text
 plt.close()
 
 # 2.8 Show class distribution and weights effectiveness
@@ -174,7 +174,7 @@ results = pd.DataFrame({
 })
 
 # Save results to CSV
-results_file = f'results_binary/LogisticRegression/LogisticRegression_binary_predictions_{timestamp}.csv'
+results_file = f'model_training/results_binary/LogisticRegression/LogisticRegression_binary_predictions_{timestamp}.csv'
 results.to_csv(results_file, index=False)
 
 # Save class mapping
@@ -182,10 +182,10 @@ class_mapping = pd.DataFrame({
     'class_index': range(len(le.classes_)),
     'class_name': le.classes_
 })
-class_mapping.to_csv('results_binary/LogisticRegression/class_mapping.csv', index=False)
+class_mapping.to_csv('model_training/results_binary/LogisticRegression/class_mapping.csv', index=False)
 
 print(f"\nBinary predictions saved to: {os.path.abspath(results_file)}")
-print(f"Class mapping saved to: {os.path.abspath('results_binary/LogisticRegression/class_mapping.csv')}")
+print(f"Class mapping saved to: {os.path.abspath('model_training/results_binary/LogisticRegression/class_mapping.csv')}")
 
 print("\n" + "="*80)
 print("MODEL TRAINING AND EVALUATION COMPLETED SUCCESSFULLY!")

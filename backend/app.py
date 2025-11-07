@@ -16,9 +16,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model once
 with open("backend/model/trained_model.pkl", "rb") as f:
-    model = pickle.load(f)
+    model_dict = pickle.load(f)
+
+model = model_dict["model"]  # Access the actual ML model
 
 # Pydantic schema for validation
 class NetworkInput(BaseModel):
