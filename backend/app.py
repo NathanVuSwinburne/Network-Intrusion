@@ -44,18 +44,28 @@ async def predict(input_data: NetworkInput):
         # Preprocess using same training pipeline
         X_processed = preprocess_input(data_dict)
 
-        # Predict with trained model
+        # Get prediction probabilities
+        y_pred_proba = model.predict_proba(X_processed)
         y_pred = model.predict(X_processed)
+        
         prediction = int(y_pred[0])
+        prob_benign = float(y_pred_proba[0][0])  # Probability of class 0 (BENIGN)
+        prob_attack = float(y_pred_proba[0][1])  # Probability of class 1 (ATTACK)
 
-        # Return readable result
-        label = "Attack" if prediction == 1 else "Benign"
+        # Return detailed result
+        label = "ATTACK" if prediction == 1 else "BENIGN"
 
-        return {"prediction": prediction, "label": label}
+        return {
+            "predicted_prob_benign": prob_benign,
+            "predicted_prob_attack": prob_attack,
+            "predicted_label": prediction,
+            "predicted_class": label
+        }
 
     except Exception as e:
         print("Error details:", traceback.format_exc())  # Detailed error log
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
