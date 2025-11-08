@@ -14,7 +14,7 @@ with open("backend/model/state_encoder.pkl", "rb") as f:
 
 selected_features = [line.strip() for line in open("backend/model/selected_features.txt")]
 
-def preprocess_input(user_input: dict) -> pd.DataFrame:
+def  preprocess_input(user_input: dict) -> pd.DataFrame:
     df = pd.DataFrame([user_input])
 
     # --- Feature engineering ---
