@@ -4,7 +4,7 @@
   import createRandomString from '$lib/createRandomString';
   import theme from '../../lib/assets/chart-theme.json';
 
-  let { ...others } = $props();
+  let { data, ...others } = $props();
 
   type FeatureKey = 'avg_pkt_size' | 'duration' | 'bytes_per_sec' | 'pkts_per_sec';
 
@@ -17,24 +17,24 @@
   let echartsMod: any = null;
 
   // Example data (replace with your real arrays; values can be scaled already)
-  const featureData: Record<FeatureKey, { normal: number[]; anomaly: number[] }> = {
-    avg_pkt_size: {
-      normal: [2,4,5,6,6.4,6.8,7,7.2,8.5,9.5,11,12.8],
-      anomaly: [1.5,3,4,5.5,6.2,7.8,8,8.2,9,10.5,11.2,13.5]
-    },
-    duration: {
-      normal: [0.2,0.25,0.3,0.35,0.4,0.45,0.5],
-      anomaly: [0.5,0.55,0.6,0.65,0.7,0.8,0.9]
-    },
-    bytes_per_sec: {
-      normal: [0.1,0.12,0.14,0.15,0.16,0.18],
-      anomaly: [0.6,0.65,0.7,0.75,0.8]
-    },
-    pkts_per_sec: {
-      normal: [0.15,0.18,0.2,0.25,0.28],
-      anomaly: [0.5,0.55,0.6,0.65,0.7]
-    }
-  };
+  // const featureData: Record<FeatureKey, { normal: number[]; anomaly: number[] }> = {
+  //   avg_pkt_size: {
+  //     normal: [2,4,5,6,6.4,6.8,7,7.2,8.5,9.5,11,12.8],
+  //     anomaly: [1.5,3,4,5.5,6.2,7.8,8,8.2,9,10.5,11.2,13.5]
+  //   },
+  //   duration: {
+  //     normal: [0.2,0.25,0.3,0.35,0.4,0.45,0.5],
+  //     anomaly: [0.5,0.55,0.6,0.65,0.7,0.8,0.9]
+  //   },
+  //   bytes_per_sec: {
+  //     normal: [0.1,0.12,0.14,0.15,0.16,0.18],
+  //     anomaly: [0.6,0.65,0.7,0.75,0.8]
+  //   },
+  //   pkts_per_sec: {
+  //     normal: [0.15,0.18,0.2,0.25,0.28],
+  //     anomaly: [0.5,0.55,0.6,0.65,0.7]
+  //   }
+  // };
 
   function makeHistogram(values: number[], binCount = 7) {
     if (values.length === 0) return { labels: [], counts: [] };
@@ -65,11 +65,11 @@
   }
 
   function buildOptions() {
-    const { normal, anomaly } = featureData[selectedFeature];
+    const { BENIGN, ANOMALY } = data[selectedFeature];
 
     const bins = 7; // tweak if desired
-    const normalHist = makeHistogram(normal, bins);
-    const anomalyHist = makeHistogram(anomaly, bins);
+    const normalHist = makeHistogram(BENIGN.bin_edges, bins);
+    const anomalyHist = makeHistogram(ANOMALY.bin_edges, bins);
 
     return {
       // main title

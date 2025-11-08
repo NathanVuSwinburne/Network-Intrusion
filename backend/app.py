@@ -1,10 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import pickle
-from .model.preprocess import preprocess_input 
+from .model.preprocess import preprocess_input
 import pandas as pd
+import json
 import traceback
+import os
 app = FastAPI()
 
 # Allow frontend connection
@@ -18,6 +21,8 @@ app.add_middleware(
 
 with open("backend/model/trained_model.pkl", "rb") as f:
     model_dict = pickle.load(f)
+
+STATISTICS_FILE = "backend/statistics.json"
 
 model = model_dict["model"]  # Access the actual ML model
 
@@ -66,9 +71,35 @@ async def predict(input_data: NetworkInput):
         print("Error details:", traceback.format_exc())  # Detailed error log
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/statistics")
+async def get_statistics():
+    try:
+        if not os.path.exists(STATISTICS_FILE):
+            raise HTTPException(
+                status_code=404,
+                detail=f"Statistics file '{STATISTICS_FILE}' not found. Please generate statistics first."
+            )
 
+        with open(STATISTICS_FILE, 'r') as f:
+            data = json.load(f)
 
+        # Return the entire JSON object as-is
+        return JSONResponse(content=data)
 
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=500,
+            detail="Error decoding JSON file. The file may be corrupted."
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"An error occurred: {str(e)}"
+        )
+
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
 # =====================================================
 # UPLOAD & PREDICTION ENDPOINT
 # =====================================================
