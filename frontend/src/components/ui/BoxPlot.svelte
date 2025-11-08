@@ -4,7 +4,7 @@
   import createRandomString from '$lib/createRandomString';
   import theme from '../../lib/assets/chart-theme.json';
 
-  let { ...others } = $props();
+  let { data, ...others } = $props();
 
   type FeatureKey = 'duration' | 'bytes_per_sec' | 'avg_pkt_size' | 'pkts_per_sec';
 
@@ -17,24 +17,25 @@
   let echartsMod: any = null;
 
   // Example scaled data (replace with real data)
-  const featureData: Record<FeatureKey, { normal: number[]; anomaly: number[] }> = {
-    duration: { normal: [0.2,0.25,0.3,0.35,0.4,0.45,0.5], anomaly: [0.5,0.55,0.6,0.65,0.7,0.8,0.9] },
-    bytes_per_sec: { normal: [0.1,0.12,0.14,0.15,0.16,0.18], anomaly: [0.6,0.65,0.7,0.75,0.8] },
-    avg_pkt_size: { normal: [0.2,0.25,0.3,0.32,0.35,0.37], anomaly: [0.55,0.6,0.62,0.65,0.7] },
-    pkts_per_sec: { normal: [0.15,0.18,0.2,0.25,0.28], anomaly: [0.5,0.55,0.6,0.65,0.7] }
-  };
+  // const featureData: Record<FeatureKey, { normal: number[]; anomaly: number[] }> = {
+  //   duration: { normal: [0.2,0.25,0.3,0.35,0.4,0.45,0.5], anomaly: [0.5,0.55,0.6,0.65,0.7,0.8,0.9] },
+  //   bytes_per_sec: { normal: [0.1,0.12,0.14,0.15,0.16,0.18], anomaly: [0.6,0.65,0.7,0.75,0.8] },
+  //   avg_pkt_size: { normal: [0.2,0.25,0.3,0.32,0.35,0.37], anomaly: [0.55,0.6,0.62,0.65,0.7] },
+  //   pkts_per_sec: { normal: [0.15,0.18,0.2,0.25,0.28], anomaly: [0.5,0.55,0.6,0.65,0.7] }
+  // };
 
-  function getBoxplotData(values: number[]) {
-    const s = [...values].sort((a,b) => a - b);
-    const q1 = s[Math.floor(s.length * 0.25)];
-    const q2 = s[Math.floor(s.length * 0.5)];
-    const q3 = s[Math.floor(s.length * 0.75)];
-    return [s[0], q1, q2, q3, s[s.length - 1]];
+  function getBoxplotData(values: { [key: string]: number}) {
+    // const s = [...values].sort((a,b) => a - b);
+    // const q1 = s[Math.floor(s.length * 0.25)];
+    // const q2 = s[Math.floor(s.length * 0.5)];
+    // const q3 = s[Math.floor(s.length * 0.75)];
+    // return [s[0], q1, q2, q3, s[s.length - 1]];
+    return [values.min, values.q1, values.median, values.q3, values.max]
   }
 
   function buildOptions() {
-    const normalBox = getBoxplotData(featureData[selectedFeature].normal);
-    const anomalyBox = getBoxplotData(featureData[selectedFeature].anomaly);
+    const normalBox = getBoxplotData(data[selectedFeature].BENIGN);
+    const anomalyBox = getBoxplotData(data[selectedFeature].ANOMALY);
 
     return {
       title: {
