@@ -14,6 +14,32 @@ def generate_traffic_statistics(csv_file_path, output_json_path='traffic_statist
     # Load the dataset
     df = pd.read_csv(csv_file_path)
 
+    # Calculate bytes_per_sec from source_bytes, dest_bytes, and duration
+    # Avoid division by zero
+    df['total_bytes'] = df['source_bytes'] + df['dest_bytes']
+    df['bytes_per_sec'] = df.apply(
+        lambda row: row['total_bytes'] / row['duration'] if row['duration'] > 0 else 0,
+        axis=1
+    )
+
+    # Calculate additional derived metrics
+    df['total_pkts'] = df['source_pkts'] + df['dest_pkts']
+    df['pkts_per_sec'] = df.apply(
+        lambda row: row['total_pkts'] / row['duration'] if row['duration'] > 0 else 0,
+        axis=1
+    )
+    df['avg_pkt_size'] = df.apply(
+        lambda row: row['total_bytes'] / row['total_pkts'] if row['total_pkts'] > 0 else 0,
+        axis=1
+    )
+
+    df['label'] = df['label'].apply(lambda x: 0 if str(x).upper() == 'BENIGN' else 1)
+
+
+    # Replace any remaining NaN or infinite values with 0
+    df = df.replace([np.inf, -np.inf], 0)
+    df = df.fillna(0)
+
     # Initialize statistics dictionary
     stats = {}
 
@@ -34,8 +60,26 @@ def generate_traffic_statistics(csv_file_path, output_json_path='traffic_statist
     # Add traffic class labels
     df['traffic_class'] = df['label'].map({0: 'BENIGN', 1: 'ANOMALY'})
 
-    # Features to analyze
+    # Features to analyze (using calculated metrics)
     features = ['duration', 'bytes_per_sec', 'avg_pkt_size', 'pkts_per_sec']
+
+
+    # Sunburst plot data - Traffic class (inner) and States (outer)
+    stats['sunburst_data'] = {
+        'normal': {},
+        'anomaly': {}
+    }
+
+    # Get state counts for BENIGN traffic
+    benign_states = df[df['traffic_class'] == 'BENIGN']['state'].value_counts()
+    for state, count in benign_states.items():
+        stats['sunburst_data']['BENIGN'][str(state)] = int(count)
+
+    # Get state counts for ANOMALY traffic
+    anomaly_states = df[df['traffic_class'] == 'ANOMALY']['state'].value_counts()
+    for state, count in anomaly_states.items():
+        stats['sunburst_data']['ANOMALY'][str(state)] = int(count)
+
 
     # Box plot data - distribution by traffic class
     stats['box_plot_data'] = {}
@@ -78,17 +122,25 @@ def generate_traffic_statistics(csv_file_path, output_json_path='traffic_statist
             if len(data) > 0:
                 # Create histogram with 30 bins
                 counts, bin_edges = np.histogram(data, bins=30)
+
+                # Create labels in the format "min–max"
+                labels = []
+                for i in range(len(bin_edges) - 1):
+                    a = bin_edges[i]
+                    b = bin_edges[i + 1]
+                    labels.append(f"{round(a, 2)}–{round(b, 2)}")
+
                 stats['histogram_data'][feature][label] = {
+                    'labels': labels,
                     'counts': counts.tolist(),
                     'bin_edges': bin_edges.tolist(),
-                    'bin_centers': ((bin_edges[:-1] + bin_edges[1:]) / 2).tolist(),
                     'total_count': int(len(data))
                 }
             else:
                 stats['histogram_data'][feature][label] = {
+                    'labels': [],
                     'counts': [],
                     'bin_edges': [],
-                    'bin_centers': [],
                     'total_count': 0
                 }
 
@@ -124,13 +176,14 @@ def generate_traffic_statistics(csv_file_path, output_json_path='traffic_statist
     print(f"Total data points: {stats['number_of_data_points']}")
     print(f"Benign traffic: {stats['benign_count']} ({stats['benign_count']/stats['number_of_data_points']*100:.2f}%)")
     print(f"Anomaly traffic: {stats['anomaly_count']} ({stats['anomaly_count']/stats['number_of_data_points']*100:.2f}%)")
+    print(f"Data size: {stats['data_size']['megabytes']} MB ({stats['data_size']['bytes']:,} bytes)")
 
     return stats
 
 # Example usage
 if __name__ == "__main__":
     # Replace 'your_dataset.csv' with your actual file path
-    csv_file = 'dataset.csv'
+    csv_file = 'merged_datasets.csv'
     output_file = 'traffic_statistics.json'
 
     try:

@@ -22,7 +22,7 @@ app.add_middleware(
 with open("backend/model/trained_model.pkl", "rb") as f:
     model_dict = pickle.load(f)
 
-STATISTICS_FILE = "backend/statistics.json"
+STATISTICS_FILE = "backend/generate_stats/traffic_statistics.json"
 
 model = model_dict["model"]  # Access the actual ML model
 

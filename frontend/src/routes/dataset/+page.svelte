@@ -86,7 +86,7 @@
 	<!-- Histogram only (full width, 1 column) -->
 	<section class="mt-10 grid grid-cols-1 gap-6">
 	<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">
-		<Sunburst class="min-h-96 w-full" />
+		<Sunburst class="min-h-96 w-full" data={statistics.sunburst_data} />
 	</div>
 </section>
 

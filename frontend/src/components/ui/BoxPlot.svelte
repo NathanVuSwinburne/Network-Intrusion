@@ -46,7 +46,7 @@
       tooltip: {
         trigger: 'item',
         formatter: (p: any) => {
-          const [min, q1, med, q3, max] = p.value;
+          const [id, min, q1, med, q3, max] = p.value;
           return `<b>${p.name}</b><br/>min: ${min}<br/>Q1: ${q1}<br/>median: ${med}<br/>Q3: ${q3}<br/>max: ${max}`;
         }
       },
