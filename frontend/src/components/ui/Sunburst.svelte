@@ -4,7 +4,7 @@
   import createRandomString from '$lib/createRandomString';
   import theme from '../../lib/assets/chart-theme.json';
 
-  let { ...others } = $props();
+  let { data, ...others } = $props();
 
   const chartId = 'sunburst_' + createRandomString(4);
   let container: HTMLDivElement;
@@ -14,10 +14,10 @@
   // --- Replace with your real counts ---
   // Provide 4 states per class.
   // Values are counts (not percentages) — the chart computes percentages.
-  const breakdown = {
-    normal: { stateA: 16, stateB: 12, stateC: 9, stateD: 5 },
-    anomaly: { stateA: 8,  stateB: 6,  stateC: 4, stateD: 3 }
-  };
+  // const breakdown = {
+  //   normal: { stateA: 16, stateB: 12, stateC: 9, stateD: 5 },
+  //   anomaly: { stateA: 8,  stateB: 6,  stateC: 4, stateD: 3 }
+  // };
 
   const stateLabels = {
     stateA: 'State A',
@@ -35,14 +35,14 @@
   }
 
   function buildData() {
-    const totalNormal  = sumValues(breakdown.normal);
-    const totalAnomaly = sumValues(breakdown.anomaly);
+    const totalNormal  = sumValues(data.BENIGN);
+    const totalAnomaly = sumValues(data.ANOMALY);
 
     const normalNode = {
       name: 'Normal',
       value: totalNormal,
       itemStyle: { color: COLOR_NORMAL },
-      children: Object.entries(breakdown.normal).map(([k, v]) => ({
+      children: Object.entries(data.BENIGN).map(([k, v]) => ({
         name: stateLabels[k as keyof typeof stateLabels] ?? k,
         value: v
       }))
@@ -52,7 +52,7 @@
       name: 'Anomaly',
       value: totalAnomaly,
       itemStyle: { color: COLOR_ANOMALY },
-      children: Object.entries(breakdown.anomaly).map(([k, v]) => ({
+      children: Object.entries(data.ANOMALY).map(([k, v]) => ({
         name: stateLabels[k as keyof typeof stateLabels] ?? k,
         value: v
       }))
