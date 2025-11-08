@@ -1,402 +1,202 @@
-# Network Intrusion Detection System
+# Network Intrusion Detection – Backend (FastAPI + scikit-learn)
 
-A comprehensive machine learning-based network intrusion detection system that combines two major cybersecurity datasets (UNSW-NB15 and CIC-IDS-2017) to perform binary classification of network traffic as benign or malicious.
+A FastAPI backend exposing a binary network intrusion classifier (BENIGN vs ATTACK). It accepts single-flow JSON, applies the same preprocessing pipeline used at training time (encoders + scaler + engineered features), and returns both class and probabilities.
 
-## Table of Contents
+## Key Files
 
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-- [Datasets](#datasets)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Pipeline Workflow](#pipeline-workflow)
-- [Model Performance](#model-performance)
-- [Results](#results)
-- [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-- [License](#license)
+- Backend API
+  - `backend/app.py` – FastAPI app, CORS, `/predict/` endpoint, model loading.
+- Preprocessing & Artifacts
+  - `backend/model/preprocess.py` – Feature engineering, categorical encoding, scaling, feature ordering.
+  - `backend/model/trained_model.pkl` – Pickled dict containing the trained scikit-learn model under key `"model"`.
+  - `backend/model/scaler.pkl` – Fitted scaler used at training time.
+  - `backend/model/label_encoder.pkl` – Label encoder fitted on target classes.
+  - `backend/model/protocol_encoder.pkl` – Encoder for `protocol` feature (must contain all runtime categories).
+  - `backend/model/state_encoder.pkl` – Encoder for `state` feature (must contain all runtime categories).
+  - `backend/model/selected_features.txt` – Saved feature list (loaded but not currently used in preprocessing).
 
-## Overview
+Note: The optional CSV upload endpoint in `backend/app.py` is commented out.
 
-This project implements an end-to-end machine learning pipeline for network intrusion detection. It processes and merges two prominent cybersecurity datasets, performs comprehensive exploratory data analysis, applies hybrid feature selection techniques, and trains multiple supervised and unsupervised learning models to detect network attacks.
+## Runtime Requirements
 
-### Key Objectives
+- Python 3.9+ recommended
+- Packages: fastapi, uvicorn, pydantic, numpy, pandas, scikit-learn (for model artifacts compatibility), pickle (stdlib)
 
-- Merge and preprocess heterogeneous network traffic datasets
-- Perform comprehensive exploratory data analysis with visualizations
-- Apply hybrid feature selection combining correlation, Random Forest importance, and mutual information
-- Train and evaluate binary classification models (Decision Tree, Logistic Regression)
-- Perform unsupervised clustering analysis using K-Means
-- Achieve high accuracy in distinguishing benign traffic from network attacks
-
-## Project Structure
-
+If you don’t use a requirements file, install quickly with:
 ```
-Network-Intrusion/
-├── Data_Preprocessing/
-│   ├── Datasets_merging_process/
-│   │   ├── DownloadDataset.py          # Kaggle dataset downloader
-│   │   ├── dataset_cic_ids.py          # CIC-IDS-2017 preprocessing
-│   │   ├── dataset_unsw.py             # UNSW-NB15 preprocessing
-│   │   └── merge_both.py               # Dataset merger
-│   └── DataPreprocessing_Binaryclass.py # Binary classification preprocessing
-│
-├── EDA/
-│   ├── Script/
-│   │   ├── merged_dataset_eda_with_plots.py    # Comprehensive EDA with visualizations
-│   │   ├── merged_dataset_eda.py               # Statistical EDA
-│   │   ├── cic_ids_2017_eda_complete_output.py # CIC-IDS-2017 specific analysis
-│   │   └── unsw_nb15_focused_analysis.py       # UNSW-NB15 specific analysis
-│   └── Outputs/                        # Generated EDA plots and reports
-│
-├── supervised_learning/
-│   └── Binary Classification/
-│       ├── training_binary_DecisionTree.py     # Decision Tree classifier
-│       └── training_binary_Logistic_Regression.py # Logistic Regression classifier
-│
-├── unsupervised_learning/
-│   └── Clustering/
-│       ├── kmean.py                    # K-Means clustering analysis
-│       └── results_kmean/              # Clustering results and visualizations
-│
-├── data/
-│   ├── network-intrusion-dataset/      # Raw datasets (UNSW-NB15, CIC-IDS-2017)
-│   ├── merged_data/                    # Merged datasets
-│   └── processed_data_binary/          # Preprocessed training/test data
-│
-├── models_checkpoint/
-│   └── binary/                         # Trained model checkpoints
-│
-├── results_binary/
-│   ├── DecisionTree/                   # Decision Tree results
-│   └── LogisticRegression/             # Logistic Regression results
-│
-├── requirements.txt                    # Python dependencies
-├── pyproject.toml                      # Project configuration
-└── README.md                           # Project documentation
+pip install fastapi uvicorn pydantic numpy pandas scikit-learn
 ```
 
-## Datasets
+## Project Setup (Windows, VS Code)
 
-### UNSW-NB15
-
-- **Source**: University of New South Wales
-- **Description**: Modern network traffic dataset containing normal activities and synthetic attack behaviors
-- **Features**: 13 selected features including protocol, state, duration, bytes, packets, TCP window sizes, and segment sizes
-- **Dataset ID**: 0
-
-### CIC-IDS-2017
-
-- **Source**: Canadian Institute for Cybersecurity
-- **Description**: Comprehensive intrusion detection dataset with multiple attack types
-- **Features**: 14 selected features aligned with UNSW-NB15 schema
-- **Attack Types**: DDoS, DoS, PortScan, Brute Force, Web Attacks, Infiltration, Botnet, and more
-- **Dataset ID**: 1
-
-### Merged Dataset
-
-- **Combined Features**: 14 canonical features harmonized across both datasets
-- **Label**: Binary classification (0 = BENIGN, 1 = ATTACK)
-- **Preprocessing**: Duplicate removal, missing value imputation, feature engineering
-
-## Features
-
-### Data Processing
-
-- **Automated Dataset Download**: Kaggle API integration for seamless dataset acquisition
-- **Duplicate Removal**: Intelligent deduplication based on feature signatures
-- **Missing Value Handling**: Median imputation for numerical features
-- **Feature Engineering**: 7 derived features including:
-  - Average packet size
-  - Packet ratio (forward/backward)
-  - Byte ratio
-  - Request-response packet ratio
-  - Window-to-payload ratio
-  - Bytes per second (throughput)
-  - Packets per second (packet rate)
-
-### Feature Selection
-
-Hybrid approach combining three methods:
-
-1. **Correlation Filter**: Spearman correlation with target (threshold: 0.10)
-2. **Random Forest Importance**: Tree-based feature importance (threshold: 0.01)
-3. **Mutual Information**: Information gain analysis (threshold: 0.01)
-4. **Redundancy Removal**: Eliminates highly correlated features (correlation > 0.95)
-
-### Class Imbalance Handling
-
-- **Training Set**: Downsampling majority class to 2:1 ratio (Benign:Attack)
-- **Test Set**: Maintains original distribution for realistic evaluation
-- **Model Training**: Class weights applied for balanced learning
-
-### Exploratory Data Analysis
-
-Comprehensive visualizations including:
-
-- Attack type distribution analysis
-- Protocol and connection state analysis
-- Port usage patterns and security analysis
-- Traffic volume and duration distributions
-- Feature correlation heatmaps
-- Cybersecurity-specific insights
-
-## Installation
-
-### Prerequisites
-
-- Python 3.13 or higher
-- pip package manager
-
-### Setup
-
-1. Clone the repository:
-```bash
-git clone https://github.com/NathanVuSwinburne/Network-Intrusion.git
-cd Network-Intrusion
+1) Create and activate a virtual environment:
+```
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-2. Install dependencies:
-```bash
+2) Install dependencies:
+```
 pip install -r requirements.txt
 ```
-
-Or using uv:
-```bash
-uv pip install -r requirements.txt
+or (if no requirements.txt):
+```
+pip install fastapi uvicorn pydantic numpy pandas scikit-learn
 ```
 
-### Dependencies
+3) Ensure package structure (needed for `from .model.preprocess import preprocess_input`):
+- Add empty `__init__.py` files if missing:
+  - `backend/__init__.py`
+  - `backend/model/__init__.py`
 
-Core libraries:
-- pandas >= 1.5.0
-- numpy >= 1.21.0
-- scikit-learn >= 1.0.0
-- matplotlib >= 3.5.0
-- seaborn >= 0.11.0
-- xgboost >= 1.7.0
-- imbalanced-learn >= 0.10.0
-- kagglehub >= 0.2.0
+4) Verify model artifacts exist:
+- `backend/model/trained_model.pkl`
+- `backend/model/scaler.pkl`
+- `backend/model/label_encoder.pkl`
+- `backend/model/protocol_encoder.pkl`
+- `backend/model/state_encoder.pkl`
+- `backend/model/selected_features.txt`
 
-## Usage
+## Running the API
 
-### 1. Download Datasets
-
-```bash
-python Data_Preprocessing/Datasets_merging_process/DownloadDataset.py
+From the project root:
+```
+python -m uvicorn backend.app:app --reload
 ```
 
-This downloads UNSW-NB15 and CIC-IDS-2017 datasets from Kaggle.
+- Open Swagger UI: http://127.0.0.1:8000/docs
+- CORS allows `http://localhost:5173` (Vite/React default). Adjust in `backend/app.py` if your frontend runs elsewhere.
 
-### 2. Process Individual Datasets(CIC-IDS-2017 First)
+## API
 
-```bash
-# Process CIC-IDS-2017
-python Data_Preprocessing/Datasets_merging_process/dataset_cic_ids.py
+### POST /predict/
 
-# Process UNSW-NB15
-python Data_Preprocessing/Datasets_merging_process/dataset_unsw.py
+- Purpose: Single-record inference.
+- Content-Type: application/json
 
+Request body schema (validated by Pydantic `NetworkInput`):
+```json
+{
+  "source_bytes": 1234.0,
+  "dest_bytes": 567.0,
+  "source_pkts": 10.0,
+  "dest_pkts": 8.0,
+  "tcp_win_fwd": 5120.0,
+  "tcp_win_bwd": 4096.0,
+  "mean_seg_size_fwd": 200.0,
+  "mean_seg_size_bwd": 180.0,
+  "duration": 2.5,
+  "protocol": "tcp",
+  "state": "ESTABLISHED"
+}
 ```
 
-### 3. Merge Datasets
-
-```bash
-python Data_Preprocessing/Datasets_merging_process/merge_both.py
+Successful response:
+```json
+{
+  "predicted_prob_benign": 0.8732,
+  "predicted_prob_attack": 0.1268,
+  "predicted_label": 0,
+  "predicted_class": "BENIGN"
+}
 ```
 
-### 4. Exploratory Data Analysis
-```bash
-python EDA/Script/cic_ids_2017_eda_complete_output.py
-```
-```bash
-python EDA/Script/unsw_nb15_focused_analysis.py
-```
-```bash
-python EDA/Script/comprehensive_eda_individual_plots.py
-```
+- `predicted_label`: 0 = BENIGN, 1 = ATTACK.
+- Probability indices follow scikit-learn’s `predict_proba` ordering.
 
-Generates comprehensive visualizations in `EDA/Outputs/`.
-
-### 5. Preprocess for Binary Classification
-
-```bash
-python Data_Preprocessing/DataPreprocessing_Binaryclass.py
+### Example curl
+```
+curl -X POST "http://127.0.0.1:8000/predict/" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"source_bytes\":1234,\"dest_bytes\":567,\"source_pkts\":10,\"dest_pkts\":8,\"tcp_win_fwd\":5120,\"tcp_win_bwd\":4096,\"mean_seg_size_fwd\":200,\"mean_seg_size_bwd\":180,\"duration\":2.5,\"protocol\":\"tcp\",\"state\":\"ESTABLISHED\"}"
 ```
 
-Performs:
-- Feature engineering
-- Hybrid feature selection
-- Train/test split (80/20)
-- Class balancing
-- Standardization
-- Saves processed data to `data/processed_data_binary/`
+## How It Works
 
-### 6. Train Supervised Models
+### Model Loading
 
-```bash
-# Decision Tree
-python supervised_learning/Binary\ Classification/training_binary_DecisionTree.py
+`backend/app.py` loads a pickle once at startup:
+- `trained_model.pkl` is unpickled to `model_dict`.
+- The actual model is taken from `model_dict["model"]`.
 
-# Logistic Regression
-python supervised_learning/Binary\ Classification/training_binary_Logistic_Regression.py
-```
+This keeps inference fast and stateless across requests.
 
-Models are saved to `models_checkpoint/binary/` with encoders.
+### Preprocessing Pipeline
 
-### 7. Unsupervised Clustering Analysis
+`backend/model/preprocess.py` is designed to replicate training-time transforms:
 
-```bash
-python unsupervised_learning/Clustering/kmean.py
-```
+1) Input to DataFrame
+   - Converts the single JSON payload into a one-row DataFrame.
 
-Performs K-Means clustering with PCA visualization and saves results to `unsupervised_learning/Clustering/results_kmean/`.
+2) Feature engineering (derived, numeric):
+   - `avg_pkt_size` = (source_bytes + dest_bytes) / (source_pkts + dest_pkts + 1e-6)
+   - `pkt_ratio` = source_pkts / (dest_pkts + 1)
+   - `byte_ratio` = source_bytes / (dest_bytes + 1)
+   - `req_resp_avg_pkt_ratio` = (source_bytes/(source_pkts+1)) / (dest_bytes/(dest_pkts+1) + 1e-6)
+   - `win_payload_ratio` = (tcp_win_fwd + tcp_win_bwd) / (source_bytes + dest_bytes + 1)
+   - `bytes_per_sec` = (source_bytes + dest_bytes) / (duration + 1)
+   - `pkts_per_sec` = (source_pkts + dest_pkts) / (duration + 1)
 
-## Pipeline Workflow
+3) Categorical encoding:
+   - `protocol_encoded` = `protocol_encoder.transform(protocol)`
+   - `state_encoded` = `state_encoder.transform(state)`
+   - Original `protocol`, `state` columns are dropped after encoding.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    1. Data Acquisition                      │
-│  DownloadDataset.py → UNSW-NB15 + CIC-IDS-2017 datasets    │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────┐
-│                 2. Dataset Processing                       │
-│  dataset_unsw.py + dataset_cic_ids.py → Standardization    │
-│  • Duplicate removal • Feature alignment • Label mapping    │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────┐
-│                   3. Dataset Merging                        │
-│  merge_both.py → merged_datasets.csv                        │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────┐
-│          4. Exploratory Data Analysis (EDA)                 │
-│  merged_dataset_eda_with_plots.py → Visualizations          │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────┐
-│              5. Feature Engineering & Selection             │
-│  DataPreprocessing_Binaryclass.py                           │
-│  • 7 engineered features • Hybrid selection                 │
-│  • Class balancing • Scaling                                │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-        ┌─────────────┴─────────────┐
-        │                           │
-┌───────▼──────────┐      ┌─────────▼────────────┐
-│  6a. Supervised  │      │  6b. Unsupervised    │
-│     Learning     │      │      Learning        │
-│  • Decision Tree │      │  • K-Means Clustering│
-│  • Log Regression│      │  • PCA Visualization │
-└──────────────────┘      └──────────────────────┘
-```
+   Important: Incoming categories must exist in the encoders’ vocabularies. Unknown categories will raise an error.
 
-## Model Performance
+4) Feature ordering and dtype:
+   - Columns arranged to the exact `feature_order` expected by the model.
+   - Cast to `float32`.
 
-### Binary Classification Models
+5) Scaling:
+   - `scaler.transform(...)` applied to the ordered features.
+   - Returns a DataFrame matching `feature_order`.
 
-Models are trained with:
-- **Class Weights**: Balanced to handle imbalanced data
-- **Evaluation Metrics**: Accuracy, Precision, Recall, F1-Score
-- **Confusion Matrix**: Visual performance analysis
-- **Test Set**: Real-world distribution maintained
+Note: `selected_features.txt` is loaded but not currently used to slice features; the pipeline relies on the hard-coded `feature_order`.
 
-### Clustering Analysis
+### Inference
 
-- **Algorithm**: K-Means with optimal K selection
-- **Dimensionality Reduction**: PCA (2D for visualization, 10D for clustering)
-- **Outlier Removal**: Isolation Forest (1% contamination)
-- **Evaluation Metrics**: Silhouette Score, Davies-Bouldin Index
-- **Cluster Interpretation**: Benign vs Attack composition analysis
+`/predict/` performs:
+- `X_processed = preprocess_input(data_dict)`
+- `y_pred_proba = model.predict_proba(X_processed)` → `[P(0=BENIGN), P(1=ATTACK)]`
+- `y_pred = model.predict(X_processed)` → `[0|1]`
+- Converts to JSON with both numeric label and string class.
 
-## Results
+### Error Handling
 
-### Output Directories
+- All exceptions in `/predict/` return HTTP 500 with the exception message.
+- Full traceback is printed to server logs for debugging.
+- Common runtime errors and fixes:
+  - `FileNotFoundError`: Ensure all `.pkl` and `.txt` artifacts exist at `backend/model/`.
+  - `ValueError` (unknown category): Ensure `protocol`/`state` values were seen during training or extend encoders.
+  - `ImportError` (relative import): Ensure `backend/` and `backend/model/` contain `__init__.py`.
 
-- **EDA/Outputs/**: Exploratory data analysis plots
-  - Attack distribution analysis
-  - Port analysis
-  - Traffic analysis
-  - Correlation heatmaps
-  - Cybersecurity insights
+## Frontend Integration
 
-- **results_binary/**: Supervised learning results
-  - Confusion matrices
-  - Classification reports
-  - Prediction results (CSV)
-  - Class mappings
+- CORS is configured to allow `http://localhost:5173`.
+- Adjust `allow_origins` in `backend/app.py` for different domains or add `"*"` during development.
 
-- **unsupervised_learning/Clustering/results_kmean/**: Clustering results
-  - PCA visualizations
-  - Elbow plots
-  - Cluster distribution analysis
-  - Clustering metrics report
+## Performance Notes
 
-- **models_checkpoint/binary/**: Trained model files
-  - Model weights (pickle format)
-  - Label encoders
-  - Protocol and state encoders
+- Model and artifacts load once at startup.
+- Preprocessing uses vectorized pandas/numpy ops; single-record latency is dominated by Python/Model inference.
+- For production, consider:
+  - Running behind an ASGI server with workers (e.g., `uvicorn --workers 2`).
+  - Enabling structured logging and metrics.
+  - Pinning scikit-learn/numpy versions consistent with training.
 
-## Technologies Used
+## Extensibility
 
-### Machine Learning
+- Batch predictions: The commented `/upload-csv/` endpoint in `backend/app.py` shows how to read a CSV, preprocess, and annotate predictions. It can be re-enabled and adapted if needed.
+- Health checks: Add `/health` returning simple status for monitoring.
+- Validation: Extend `NetworkInput` with ranges and regex for stricter validation.
 
-- **scikit-learn**: Classification, clustering, preprocessing, feature selection
+## Troubleshooting
 
-### Data Processing
-
-- **pandas**: Data manipulation and analysis
-- **numpy**: Numerical computations
-- **scipy**: Statistical functions
-
-### Visualization
-
-- **matplotlib**: Base plotting library
-- **seaborn**: Statistical visualizations
-- **plotly**: Interactive plots (optional)
-
-### Dataset Management
-
-- **kagglehub**: Automated dataset downloading from Kaggle
-
-## Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m 'Add YourFeature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
-
-### Areas for Contribution
-
-- Additional classification algorithms (Random Forest, SVM, Neural Networks)
-- Multi-class attack type classification
-- Real-time intrusion detection system
-- Model deployment and API development
-- Performance optimization
-- Additional dataset integration
+- VS Code Debug: Use a launch config with module `"uvicorn"` and args `["backend.app:app", "--reload"]`.
+- Relative Paths: Start the server from project root so artifact paths like `backend/model/...` resolve correctly.
+- Data Types: All numeric inputs are expected as numbers; strings for `protocol` and `state`.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- **UNSW-NB15 Dataset**: University of New South Wales, Canberra
-- **CIC-IDS-2017 Dataset**: Canadian Institute for Cybersecurity
-- **Kaggle**: Dataset hosting and API access
-
-## Contact
-
-For questions, issues, or collaboration opportunities, please open an issue on GitHub.
-
----
-
-**Project Status**: Active Development
-
-**Last Updated**: October 2025
+Internal/Academic use. Add a license file if distributing.
