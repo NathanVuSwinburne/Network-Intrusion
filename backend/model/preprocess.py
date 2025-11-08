@@ -35,24 +35,9 @@ def  preprocess_input(user_input: dict) -> pd.DataFrame:
     df = df.drop(columns=['protocol', 'state'], errors='ignore')
 
     # --- Ensure correct feature order ---
-    feature_order = [
-        'mean_seg_size_fwd',
-        'source_bytes',
-        'dest_bytes',
-        'tcp_win_fwd',
-        'state_encoded',
-        'win_payload_ratio',
-        'pkt_ratio',
-        'tcp_win_bwd',
-        'avg_pkt_size',
-        'bytes_per_sec',
-        'req_resp_avg_pkt_ratio',
-        'protocol_encoded',
-        'mean_seg_size_bwd',
-        'pkts_per_sec',
-        'byte_ratio',
-        'duration'
-    ]
+    feature_order = ['mean_seg_size_fwd', 'source_bytes','dest_bytes','tcp_win_fwd','state_encoded','win_payload_ratio','pkt_ratio',
+        'tcp_win_bwd','avg_pkt_size','bytes_per_sec','req_resp_avg_pkt_ratio','protocol_encoded','mean_seg_size_bwd','pkts_per_sec',
+        'byte_ratio','duration']
     X = df[feature_order].astype(np.float32)
 
     # --- Scale ---
