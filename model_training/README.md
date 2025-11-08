@@ -307,37 +307,37 @@ Models are trained with:
 ### Clustering Analysis
 
 - **Algorithm**: K-Means with optimal K selection
-- **Dimensionality Reduction**: PCA (2D for visualization, 10D for clustering)
-- **Outlier Removal**: Isolation Forest (1% contamination)
-- **Evaluation Metrics**: Silhouette Score, Davies-Bouldin Index
-- **Cluster Interpretation**: Benign vs Attack composition analysis
-
-## Results
-
-### Output Directories
-
-- **EDA/Outputs/**: Exploratory data analysis plots
-  - Attack distribution analysis
-  - Port analysis
-  - Traffic analysis
-  - Correlation heatmaps
-  - Cybersecurity insights
-
-- **results_binary/**: Supervised learning results
-  - Confusion matrices
-  - Classification reports
-  - Prediction results (CSV)
-  - Class mappings
-
-- **unsupervised_learning/Clustering/results_kmean/**: Clustering results
-  - PCA visualizations
-  - Elbow plots
-  - Cluster distribution analysis
-  - Clustering metrics report
-
-- **models_checkpoint/binary/**: Trained model files
-  - Model weights (pickle format)
-  - Label encoders
+- **Dimensionality Reduction**: PCA (2D for vffffffffffffffffffffffffffffffffisualization, 10D for clustering)ffffffffffffffffffffffffffffffff
+- **Outlier Removal**: Isolation Forest (1% cffffffffffffffffffffffffffffffffontamination)
+- **Evaluation Metrics**: Silhouette Score, Dffffffffffffffffffffffffffffffffavies-Bouldin Index
+- **Cluster Interpretation**: Benign vs Attacffffffffffffffffffffffffffffffffk composition analysis
+ffffffffffffffffffffffffffffffff
+## Resultsffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffff
+### Output Directoriesffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffff
+- **EDA/Outputs/**: Exploratory data analysisffffffffffffffffffffffffffffffff plots
+  - Attack distribution analysisffffffffffffffffffffffffffffffff
+  - Port analysisffffffffffffffffffffffffffffffff
+  - Traffic analysisffffffffffffffffffffffffffffffff
+  - Correlation heatmapsffffffffffffffffffffffffffffffff
+  - Cybersecurity insightsffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffff
+- **results_binary/**: Supervised learning reffffffffffffffffffffffffffffffffsults
+  - Confusion matricesffffffffffffffffffffffffffffffff
+  - Classification reportsffffffffffffffffffffffffffffffff
+  - Prediction results (CSV)ffffffffffffffffffffffffffffffff
+  - Class mappingsffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffff
+- **unsupervised_learning/Clustering/results_ffffffffffffffffffffffffffffffffkmean/**: Clustering resultsffffffffffffffffffffffffffffffff
+  - PCA visualizationsffffffffffffffffffffffffffffffff
+  - Elbow plotsffffffffffffffffffffffffffffffff
+  - Cluster distribution analysisffffffffffffffffffffffffffffffff
+  - Clustering metrics reportffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffff
+- **models_checkpoint/binary/**: Trained modeffffffffffffffffffffffffffffffffl files
+  - Model weights (pickle format)ffffffffffffffffffffffffffffffff
+  - Label encodersffffffffffffffffffffffffffffffff
   - Protocol and state encoders
 
 ## Technologies Used
