@@ -72,7 +72,7 @@
 			showChart = false
 		} else {
 			chartData = [
-				{ value: Math.floor(responseData.predicted_prob_attack*100), name: 'Abnormal' },
+				{ value: Math.floor(responseData.predicted_prob_attack*100), name: 'Malicious' },
 				{ value: Math.floor(responseData.predicted_prob_benign*100), name: 'Benign'},
 			]
 			predictedResult = responseData.predicted_class
