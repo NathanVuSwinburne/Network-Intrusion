@@ -33,16 +33,16 @@
 	<section id="features" class="flex flex-col items-center space-y-4 mb-56">
 		<h2 class="text-3xl font-semibold text-text-primary">Features</h2>
 		<div class="grid grid-cols-3 gap-5">
-			<FeatureCard title="Real Time Detection" desc="Continuously analyzes network traffic to provide real time detection" />
+			<FeatureCard title="Reactive Front End" desc="Uses Svelte to integrate into the backend" />
 			<FeatureCard title="Machine Learning-Based Detection" desc="Classifies network activity as benign or malicious" />
-			<FeatureCard title="Automated Alerting System" desc="Generates instant alerts for suspicious behavior" />
+			<FeatureCard title="Explanatory Data Analysis" desc="Display features and distributions of our trained dataset" />
 		</div>
 	</section>
 
 	<section id="how-it-works" class="flex flex-col items-center space-y-4 mb-56">
 		<h2 class="text-3xl font-semibold text-text-primary">How It Works</h2>
 		<div class="grid grid-cols-3 gap-5">
-			<FeatureCard title="1. Upload a text packet" desc="Provide some network data for the model to classify" />
+			<FeatureCard title="1. Upload test data" desc="Provide some network data for the model to classify" />
 			<FeatureCard title="2. AI Detection Engine" desc="Our model analyzes network patterns and flags anomalies in real-time" />
 			<FeatureCard title="3. Clear Output Insights" desc="Receive structured results and detection insights" />
 		</div>

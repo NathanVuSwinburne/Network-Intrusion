@@ -102,11 +102,11 @@
 </section>
 
 <!-- Box Plot only (full width, 1 column) -->
-<section class="mt-10 grid grid-cols-1 gap-6">
-	<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">
-		<TwoHistogram data={statistics.histogram_data} class="min-h-96 w-full" />
-	</div>
-</section>
+<!--<section class="mt-10 grid grid-cols-1 gap-6">-->
+<!--	<div class="rounded-lg border border-dashed border-border-primary bg-primary px-4 py-3">-->
+<!--		<twohistogram data={statistics.histogram_data} class="min-h-96 w-full" />-->
+<!--	</div>-->
+<!--</section>-->
 
 </main>
 {/if}
