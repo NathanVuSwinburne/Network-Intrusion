@@ -11,5 +11,5 @@
         <label class="text-red-800 text-xs" for={id}>{errors[id]}</label>
     {/if}
 
-    <input type="number" step="0.01" id={id} name={id} class={`text-text-primary rounded border py-1 px-2 ${error ? 'border-red-800' : 'border-border-primary'}`}>
+    <input type="number" step="0.00001" id={id} name={id} class={`text-text-primary rounded border py-1 px-2 ${error ? 'border-red-800' : 'border-border-primary'}`}>
 </div>
