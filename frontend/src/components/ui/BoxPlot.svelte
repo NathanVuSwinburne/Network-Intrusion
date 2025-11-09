@@ -50,21 +50,23 @@
           return `<b>${p.name}</b><br/>min: ${min}<br/>Q1: ${q1}<br/>median: ${med}<br/>Q3: ${q3}<br/>max: ${max}`;
         }
       },
-      xAxis: { type: 'category', data: ['Normal', 'Anomaly'], axisLabel: { color: '#ccc' },
+      xAxis: { type: 'category', data: ['Normal', 'Anomaly'],
+
         nameTextStyle: {
-          color: '#aaa',
+          color: '#fff',
           fontSize: 14,
-        }
+        },
+        axisLabel: { color: '#fff' },
       },
       yAxis: {
         type: 'value',
         name: 'Scaled Value',
         nameLocation: 'middle',
         nameGap: 35,
-        axisLabel: { color: '#ccc' },
+        axisLabel: { color: '#fff ' },
         splitLine: { show: true },
         nameTextStyle: {
-          color: '#aaa',
+          color: '#fff',
           fontSize: 14,
         }
       },

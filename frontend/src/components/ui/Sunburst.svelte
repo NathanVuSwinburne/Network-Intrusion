@@ -70,8 +70,9 @@
     return {
       title: {
         text: 'Anomaly vs Normal — Sunburst Breakdown',
+          subtext: 'Click on a category to focus it',
         left: 'center',
-        top: 10,
+        top: 0,
         textStyle: { color: '#eee', fontSize: 16, fontWeight: 'bold' }
       },
       legend: {
@@ -102,7 +103,7 @@
       series: [
         {
           type: 'sunburst',
-          radius: ['20%', '85%'],
+            center: ['50%', '55%'],
           sort: 'none',
           emphasis: { focus: 'ancestor' },
           label: {
@@ -121,7 +122,7 @@
             {
               // Outer ring (states)
               r0: '50%',
-              r: '85%',
+              r: '80%',
               label: { rotate: 'tangential' },
               itemStyle: { borderWidth: 2, borderColor: '#141414' }
             }

@@ -74,19 +74,21 @@
 				nameGap: 30,
 				type: "value",
 				splitLine: { show: true },
+
+                axisLabel: { color: '#fff ' },
                 nameTextStyle: {
-                    color: '#aaa',
+                    color: '#fff',
                     fontSize: 14,
                 }
             },
 			yAxis: {
 				name: "bytes_per_sec",
-				nameLocation: "middle",
+				nameLocation: "middle",        axisLabel: { color: '#fff ' },
 				nameGap: 45,
 				type: "value",
 				splitLine: { show: true },
                 nameTextStyle: {
-                    color: '#aaa',
+                    color: '#fff',
                     fontSize: 14,
                 }
             },
