@@ -213,15 +213,16 @@ Note: `selected_features.txt` is loaded but not currently used to slice features
 ## Extensibility
 
 - Batch predictions: The commented `/upload-csv/` endpoint in `backend/app.py` shows how to read a CSV, preprocess, and annotate predictions. It can be re-enabled and adapted if needed.
-- Health checks: Add `/health` returning simple status for monitoring.
+- Health checks: Add `/health` returning a simple status for monitoring.
 - Validation: Extend `NetworkInput` with ranges and regex for stricter validation.
 
 ## Troubleshooting
 
 - VS Code Debug: Use a launch config with module `"uvicorn"` and args `["backend.app:app", "--reload"]`.
-- Relative Paths: Start the server from project root so artifact paths like `backend/model/...` resolve correctly.
+- Relative Paths: Start the server from the project root so artifact paths like `backend/model/...` resolve correctly.
 - Data Types: All numeric inputs are expected as numbers; strings for `protocol` and `state`.
 
 ## License
 
-Internal/Academic use. Add a license file if distributing.
+Apache License, Version 2.0
+
