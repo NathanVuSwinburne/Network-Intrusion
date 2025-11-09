@@ -27,7 +27,7 @@ If you don’t use a requirements file, install quickly with:
 pip install fastapi uvicorn pydantic numpy pandas scikit-learn
 ```
 
-## Project Setup (Windows, VS Code)
+## Backend Project Setup (Windows, VS Code)
 
 1) Create and activate a virtual environment:
 ```
@@ -66,6 +66,31 @@ python -m uvicorn backend.app:app --reload
 
 - Open Swagger UI: http://127.0.0.1:8000/docs
 - CORS allows `http://localhost:5173` (Vite/React default). Adjust in `backend/app.py` if your frontend runs elsewhere.
+
+## Frontend Project Setup
+1) Install any NodeJS Interpreter. We use [Bun](https://bun.com/)
+2) Open a terminal in the Frontend directory
+3) Install dependencies
+```
+bun install
+```
+
+### If developing
+1) Start the web development server
+```
+bun run dev
+```
+
+### If deploying
+1) Build the website
+```
+bun run build
+```
+
+2) Start the content server
+```
+bun run preview
+```
 
 ## API
 
