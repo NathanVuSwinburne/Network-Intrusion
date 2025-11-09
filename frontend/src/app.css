@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+@utility container {
+    padding-inline: 2rem;
+    margin-inline: auto;
+
+
+    @variant 2xl {
+        padding-inline: 3.75rem;
+    }
+}
+
+
+:root {
+    --bg-color: #0a0a0a;
+    --bg-grid-color: #101010;
+}
+
+@theme {
+    --color-primary: #0d0d0d;
+    --color-text-primary: #e7e7e7;
+    --color-text-secondary: #aaaaaa;
+    --color-border-primary: #404040;
+}
+
+* {
+    font-family: "0xProto Nerd Font Mono", monospace;
+}
+
+body {
+    background: var(--bg-color);
+    background-image: linear-gradient(var(--bg-grid-color) .1em, transparent .1em), linear-gradient(90deg, var(--bg-grid-color) .1em, transparent .1em);
+    background-size: 6em 6em;
+}
+
+button:hover {
+    cursor: pointer;
+}
