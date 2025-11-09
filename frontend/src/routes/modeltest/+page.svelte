@@ -112,7 +112,7 @@
 				<TextInput name="Mean Seg Size Forward" id="mean_seg_size_fwd" errors={errors} />
 				<TextInput name="Mean Seg Size Backward" id="mean_seg_size_bwd" errors={errors} />
 
-				<TextInput name="Duration" id="duration" errors={errors} />
+				<TextInput name="Duration(s)" id="duration" errors={errors} />
 				<DropdownInput name="Protocol" id="protocol" options={["tcp", "udp", "arp", "ospf", "icmp"]} errors={errors} />
 				<DropdownInput name="State" id="state" options={["TXD", "FIN", "CON", "REQ", "INT"]} errors={errors} />
 			</div>
