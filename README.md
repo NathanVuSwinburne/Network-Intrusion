@@ -224,5 +224,5 @@ Note: `selected_features.txt` is loaded but not currently used to slice features
 
 ## License
 
-Apache License, Version 2.0
+MIT License
 
